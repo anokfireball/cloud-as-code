@@ -84,10 +84,13 @@ variable "architecture" {
   type    = string
   default = "arm64"
 }
+# https://github.com/siderolabs/extensions
 variable "talos_extensions" {
   type = set(string)
   default = [
-    "gvisor"
+    "gvisor",
+    "tailscale",
+    "util-linux-tools"
   ]
 }
 variable "controlplane_instance_count" {

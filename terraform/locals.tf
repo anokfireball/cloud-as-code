@@ -69,7 +69,7 @@ EOF
            - ${var.pod_subnet_block}
          serviceSubnets:
            - ${var.service_subnet_block}
-       allowSchedulingOnMasters: false
+       allowSchedulingOnMasters: true
        externalCloudProvider:
          enabled: true
          manifests:

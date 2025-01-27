@@ -3,7 +3,7 @@ set -e
 
 
 # https://www.talos.dev/latest/talos-guides/install/cloud-platforms/oracle/
-ID=376567988ad370138ad8b2698212367b8edcb69b5fd68c80be1f2ec7d603b4ba
+ID=378d366bcc8b1f672e4d94eb9c292de3fd20ebd17bd7cbdf6658071bc6de5b74
 VERSION=1.9.2
 URL=https://factory.talos.dev/image/${ID}/v${VERSION}/oracle-arm64.raw.xz
 
