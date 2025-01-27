@@ -1,0 +1,6 @@
+talos/image
+
+terraform/*.pem
+terraform/*.tfvars
+
+.decrypted~*
