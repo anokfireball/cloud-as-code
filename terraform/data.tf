@@ -32,15 +32,11 @@ data "talos_client_configuration" "talosconfig" {
   cluster_name         = var.cluster_name
   client_configuration = talos_machine_secrets.machine_secrets.client_configuration
   endpoints            = [for k, v in oci_core_instance.controlplane : v.public_ip]
-  nodes = concat(
-    [for k, v in oci_core_instance.controlplane : v.public_ip],
-    [for k, v in oci_core_instance.worker : v.private_ip]
-  )
+  nodes                = [for k, v in oci_core_instance.controlplane : v.public_ip]
 }
 
 data "talos_machine_configuration" "controlplane" {
   cluster_name = var.cluster_name
-  # cluster_endpoint = "https://${var.kube_apiserver_domain}:6443"
   cluster_endpoint = "https://${oci_network_load_balancer_network_load_balancer.controlplane_load_balancer.ip_addresses[0].ip_address}:6443"
 
   machine_type    = "controlplane"
@@ -64,62 +60,6 @@ data "talos_machine_configuration" "controlplane" {
           allowedKubernetesNamespaces:
             - kube-system
     EOT
-    ,
-    yamlencode({
-      machine = {
-        certSANs = concat([
-          var.kube_apiserver_domain,
-          oci_network_load_balancer_network_load_balancer.controlplane_load_balancer.ip_addresses[0].ip_address,
-          ],
-          [for k, v in oci_core_instance.controlplane : v.public_ip]
-        )
-      }
-      cluster = {
-        apiServer = {
-          certSANs = concat([
-            var.kube_apiserver_domain,
-            oci_network_load_balancer_network_load_balancer.controlplane_load_balancer.ip_addresses[0].ip_address,
-            ],
-            [for k, v in oci_core_instance.controlplane : v.public_ip]
-          )
-        }
-      }
-    }),
-  ]
-}
-
-data "talos_machine_configuration" "worker" {
-  cluster_name = var.cluster_name
-  # cluster_endpoint = "https://${var.kube_apiserver_domain}:6443"
-  cluster_endpoint = "https://${oci_network_load_balancer_network_load_balancer.controlplane_load_balancer.ip_addresses[0].ip_address}:6443"
-
-  machine_type    = "worker"
-  machine_secrets = talos_machine_secrets.machine_secrets.machine_secrets
-
-  talos_version      = var.talos_version
-  kubernetes_version = var.kubernetes_version
-
-  docs     = false
-  examples = false
-
-  config_patches = [
-    local.talos_base_configuration,
-    <<EOF
-machine:
-   disks:
-     - device: /dev/sdb
-       partitions:
-         - mountpoint: /var/lib/longhorn
-   kubelet:
-      extraMounts:
-        - destination: /var/lib/longhorn
-          type: bind
-          source: /var/lib/longhorn
-          options:
-          - bind
-          - rshared
-          - rw
-EOF
     ,
     yamlencode({
       machine = {

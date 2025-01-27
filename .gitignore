@@ -2,5 +2,8 @@ talos/image
 
 terraform/*.pem
 terraform/*.tfvars
+terraform/.terraform/
+*.tfstate
+*.tfstate.*
 
 .decrypted~*
