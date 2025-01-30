@@ -3,7 +3,7 @@ output "factory_disk_image" {
 }
 
 output "load_balancer_ip" {
-  value = oci_network_load_balancer_network_load_balancer.controlplane_load_balancer.ip_addresses[0].ip_address
+  value = oci_network_load_balancer_network_load_balancer.network_load_balancer.ip_addresses[0].ip_address
 }
 
 output "talosconfig" {

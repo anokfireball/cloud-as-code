@@ -23,7 +23,7 @@ resource "oci_core_subnet" "subnet" {
   vcn_id                     = oci_core_vcn.vcn.id
   prohibit_internet_ingress  = false
   prohibit_public_ip_on_vnic = false
-  availability_domain        = var.instance_availability_domain == null ? data.oci_identity_availability_domains.availability_domains.availability_domains[0].name : var.instance_availability_domain
+  ipv6cidr_blocks            = [cidrsubnet(oci_core_vcn.vcn.ipv6cidr_blocks[0], 8, 128)]
 
   #Optional
   display_name      = "${var.cluster_name}-subnet"
@@ -38,6 +38,7 @@ resource "oci_core_subnet" "subnet_regional" {
   vcn_id                     = oci_core_vcn.vcn.id
   prohibit_internet_ingress  = false
   prohibit_public_ip_on_vnic = false
+  ipv6cidr_blocks            = [cidrsubnet(oci_core_vcn.vcn.ipv6cidr_blocks[0], 8, 255)]
 
   #Optional
   display_name      = "${var.cluster_name}-subnet-regional"
@@ -60,6 +61,13 @@ resource "oci_core_route_table" "route_table" {
     #Optional
     destination_type = "CIDR_BLOCK"
     destination      = "0.0.0.0/0"
+  }
+
+  # Add IPv6 route rule
+  route_rules {
+    network_entity_id = oci_core_internet_gateway.internet_gateway.id
+    destination_type  = "CIDR_BLOCK"
+    destination       = "::/0"
   }
 }
 
@@ -91,6 +99,14 @@ resource "oci_core_network_security_group_security_rule" "allow_all" {
   direction                 = "EGRESS"
   stateless                 = false
 }
+resource "oci_core_network_security_group_security_rule" "allow_all_ipv6" {
+  network_security_group_id = oci_core_network_security_group.network_security_group.id
+  destination_type          = "CIDR_BLOCK"
+  destination               = "::/0"
+  protocol                  = "all"
+  direction                 = "EGRESS"
+  stateless                 = false
+}
 
 resource "oci_core_security_list" "security_list" {
   #Required
@@ -99,29 +115,35 @@ resource "oci_core_security_list" "security_list" {
 
   #Optional
   display_name = "${var.cluster_name}-security-list"
+  freeform_tags = local.common_labels
   egress_security_rules {
-    #Required
     destination = "0.0.0.0/0"
     protocol    = "all"
-
     stateless = true
   }
-  freeform_tags = local.common_labels
   ingress_security_rules {
-    #Required
     source   = "0.0.0.0/0"
     protocol = "all"
-
+    stateless = true
+  }
+  egress_security_rules {
+    destination = "::/0"
+    protocol    = "all"
+    stateless   = true
+  }
+  ingress_security_rules {
+    source    = "::/0"
+    protocol  = "all"
     stateless = true
   }
 }
 
-resource "oci_network_load_balancer_network_load_balancer" "controlplane_load_balancer" {
+resource "oci_network_load_balancer_network_load_balancer" "network_load_balancer" {
   depends_on = [oci_core_security_list.security_list, oci_core_vcn.vcn]
 
   #Required
   compartment_id             = var.compartment_ocid
-  display_name               = "${var.cluster_name}-controlplane-load-balancer"
+  display_name               = "${var.cluster_name}-network-load-balancer"
   subnet_id                  = oci_core_subnet.subnet.id
   network_security_group_ids = [oci_core_network_security_group.network_security_group.id]
 
@@ -140,7 +162,7 @@ resource "oci_network_load_balancer_backend_set" "talos_backend_set" {
   #Required
   name                     = "${var.cluster_name}-talos"
   policy                   = "FIVE_TUPLE"
-  network_load_balancer_id = oci_network_load_balancer_network_load_balancer.controlplane_load_balancer.id
+  network_load_balancer_id = oci_network_load_balancer_network_load_balancer.network_load_balancer.id
   health_checker {
     #Required
     protocol = "TCP"
@@ -154,7 +176,7 @@ resource "oci_network_load_balancer_backend_set" "talos_backend_set" {
 resource "oci_network_load_balancer_listener" "talos_listener" {
   #Required
   default_backend_set_name = oci_network_load_balancer_backend_set.talos_backend_set.name
-  network_load_balancer_id = oci_network_load_balancer_network_load_balancer.controlplane_load_balancer.id
+  network_load_balancer_id = oci_network_load_balancer_network_load_balancer.network_load_balancer.id
   name                     = "${var.cluster_name}-talos"
   port                     = 50000
   protocol                 = "TCP"
@@ -162,7 +184,7 @@ resource "oci_network_load_balancer_listener" "talos_listener" {
 resource "oci_network_load_balancer_backend_set" "controlplane_backend_set" {
   #Required
   name                     = "${var.cluster_name}-controlplane"
-  network_load_balancer_id = oci_network_load_balancer_network_load_balancer.controlplane_load_balancer.id
+  network_load_balancer_id = oci_network_load_balancer_network_load_balancer.network_load_balancer.id
   policy                   = "FIVE_TUPLE"
   health_checker {
     #Required
@@ -177,7 +199,7 @@ resource "oci_network_load_balancer_backend_set" "controlplane_backend_set" {
 resource "oci_network_load_balancer_listener" "controlplane_listener" {
   #Required
   default_backend_set_name = oci_network_load_balancer_backend_set.controlplane_backend_set.name
-  network_load_balancer_id = oci_network_load_balancer_network_load_balancer.controlplane_load_balancer.id
+  network_load_balancer_id = oci_network_load_balancer_network_load_balancer.network_load_balancer.id
   name                     = "${var.cluster_name}-controlplane"
   port                     = 6443
   protocol                 = "TCP"
@@ -187,7 +209,7 @@ resource "oci_network_load_balancer_backend" "controlplane_backend" {
   for_each = { for idx, val in oci_core_instance.controlplane : idx => val }
   #Required
   backend_set_name         = oci_network_load_balancer_backend_set.controlplane_backend_set.name
-  network_load_balancer_id = oci_network_load_balancer_network_load_balancer.controlplane_load_balancer.id
+  network_load_balancer_id = oci_network_load_balancer_network_load_balancer.network_load_balancer.id
   port                     = 6443
 
   #Optional
@@ -198,7 +220,7 @@ resource "oci_network_load_balancer_backend" "talos_backend" {
   for_each = { for idx, val in oci_core_instance.controlplane : idx => val }
   #Required
   backend_set_name         = oci_network_load_balancer_backend_set.talos_backend_set.name
-  network_load_balancer_id = oci_network_load_balancer_network_load_balancer.controlplane_load_balancer.id
+  network_load_balancer_id = oci_network_load_balancer_network_load_balancer.network_load_balancer.id
   port                     = 50000
 
   #Optional

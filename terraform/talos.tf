@@ -19,8 +19,8 @@ resource "talos_cluster_kubeconfig" "kubeconfig" {
     talos_machine_bootstrap.bootstrap
   ]
   client_configuration = talos_machine_secrets.machine_secrets.client_configuration
-  node                 = oci_network_load_balancer_network_load_balancer.controlplane_load_balancer.ip_addresses[0].ip_address
-  endpoint             = oci_network_load_balancer_network_load_balancer.controlplane_load_balancer.ip_addresses[0].ip_address
+  node                 = oci_network_load_balancer_network_load_balancer.network_load_balancer.ip_addresses[0].ip_address
+  endpoint             = oci_network_load_balancer_network_load_balancer.network_load_balancer.ip_addresses[0].ip_address
 }
 
 resource "talos_machine_configuration_apply" "controlplane" {

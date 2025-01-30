@@ -1,3 +1,5 @@
+# https://github.com/siderolabs/contrib/tree/main/examples/terraform/oci
+
 variable "compartment_ocid" {
   type      = string
   sensitive = true
@@ -65,7 +67,7 @@ variable "instance_shape" {
 # https://github.com/oracle/oci-cloud-controller-manager
 variable "oracle_cloud_ccm_version" {
   type    = string
-  default = "v1.20.0"
+  default = "v1.30.0"
 }
 # https://github.com/siderolabs/talos-cloud-controller-manager
 variable "talos_ccm_version" {

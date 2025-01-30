@@ -20,7 +20,7 @@ compartment: ${var.compartment_ocid}
 vcn: ${oci_core_vcn.vcn.id}
 loadBalancer:
   subnet1: ${oci_core_subnet.subnet_regional.id}
-  securityListManagementMode: None
+  securityListManagementMode: All
   securityLists:
     ${oci_core_subnet.subnet_regional.id}: ${oci_core_security_list.security_list.id}
 EOF
@@ -74,6 +74,7 @@ EOF
          enabled: true
          manifests:
            - https://raw.githubusercontent.com/siderolabs/talos-cloud-controller-manager/${var.talos_ccm_version}/docs/deploy/cloud-controller-manager.yml
+           # https://oracle.github.io/cluster-api-provider-oci/gs/install-oci-ccm.html
            - https://github.com/oracle/oci-cloud-controller-manager/releases/download/${var.oracle_cloud_ccm_version}/oci-cloud-controller-manager-rbac.yaml
            - https://github.com/oracle/oci-cloud-controller-manager/releases/download/${var.oracle_cloud_ccm_version}/oci-cloud-controller-manager.yaml
        controllerManager:
