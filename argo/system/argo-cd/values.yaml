@@ -1,0 +1,9 @@
+configs:
+  params:
+    application.namespaces: >-
+      cert-manager-system,
+      default,
+      cert-manager-system,
+      external-dns-system,
+      nginx-system
+    server.insecure: true

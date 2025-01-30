@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cluster
+  namespace: argocd-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  destination:
+    name: in-cluster
+    namespace: argocd-system
+  project: default
+  source:
+    path: argo
+    repoURL: https://github.com/C0nsultant/cloud-as-code
+    targetRevision: main
+    directory:
+      recurse: true
+      include: "{*.yml,*.yaml}"
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
