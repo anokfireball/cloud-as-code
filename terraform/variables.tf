@@ -53,12 +53,12 @@ variable "subnet_block_regional" {
 # https://github.com/siderolabs/talos
 variable "talos_version" {
   type    = string
-  default = "v1.9.2"
+  default = "v1.9.2" # talos version
 }
 # https://github.com/kubernetes/kubernetes
 variable "kubernetes_version" {
   type    = string
-  default = "v1.32.1"
+  default = "v1.32.1" # kubernetes version
 }
 variable "instance_shape" {
   type    = string
@@ -67,12 +67,12 @@ variable "instance_shape" {
 # https://github.com/oracle/oci-cloud-controller-manager
 variable "oracle_cloud_ccm_version" {
   type    = string
-  default = "v1.30.0"
+  default = "v1.30.0" # oci-cloud-controller-manager version
 }
 # https://github.com/siderolabs/talos-cloud-controller-manager
 variable "talos_ccm_version" {
   type    = string
-  default = "v1.9.0"
+  default = "v1.9.0" # talos-cloud-controller-manager version
 }
 variable "pod_subnet_block" {
   type    = string
