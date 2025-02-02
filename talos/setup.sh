@@ -3,7 +3,7 @@ set -e
 
 # https://www.talos.dev/latest/talos-guides/install/cloud-platforms/oracle/
 ID=378d366bcc8b1f672e4d94eb9c292de3fd20ebd17bd7cbdf6658071bc6de5b74
-VERSION=1.9.2
+VERSION=1.9.3
 URL=https://factory.talos.dev/image/${ID}/v${VERSION}/oracle-arm64.raw.xz
 
 SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)
