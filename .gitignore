@@ -6,4 +6,9 @@ terraform/.terraform/
 *.tfstate
 *.tfstate.*
 
+argo/secrets/*
+!argo/secrets/kustomization.yaml
+!argo/secrets/secret-generator.yaml
+!argo/secrets/*.sops.yaml
+
 .decrypted~*
