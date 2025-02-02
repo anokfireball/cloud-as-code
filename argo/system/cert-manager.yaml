@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager
+  namespace: argocd-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  project: default
+  sources:
+    - repoURL: https://charts.jetstack.io
+      chart: cert-manager
+      targetRevision: v1.16.3
+      helm:
+        valuesObject:
+          crds:
+            enabled: true
+  destination:
+    name: in-cluster
+    namespace: cert-manager-system
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt
+  namespace: cert-manager-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "4"
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: letsencrypt@kthxbye.cyou
+    privateKeySecretRef:
+      name: letsencrypt
+    solvers:
+      - dns01:
+          cloudflare:
+            email: cloudflare@kthxbye.cyou
+            apiTokenSecretRef:
+              name: cloudflare-api-token
+              key: api-token
