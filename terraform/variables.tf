@@ -53,7 +53,7 @@ variable "subnet_block_regional" {
 # https://github.com/siderolabs/talos
 variable "talos_version" {
   type    = string
-  default = "v1.9.2" # talos version
+  default = "v1.9.3" # talos version
 }
 # https://github.com/kubernetes/kubernetes
 variable "kubernetes_version" {
