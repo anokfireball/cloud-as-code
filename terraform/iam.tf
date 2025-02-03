@@ -25,6 +25,9 @@ resource "oci_identity_policy" "oci-ccm" {
     "Allow dynamic-group ${oci_identity_dynamic_group.oci-ccm.name} to use virtual-network-family in ${local.ns_type_name} ${local.ns_select_name}",
     "Allow dynamic-group ${oci_identity_dynamic_group.oci-ccm.name} to manage load-balancers in ${local.ns_type_name} ${local.ns_select_name}",
     "Allow dynamic-group ${oci_identity_dynamic_group.oci-ccm.name} to manage security-lists in ${local.ns_type_name} ${local.ns_select_name}",
+    // Volumes
+    "Allow dynamic-group ${oci_identity_dynamic_group.oci-ccm.name} to manage volumes in ${local.ns_type_name} ${local.ns_select_name}",
+    "Allow dynamic-group ${oci_identity_dynamic_group.oci-ccm.name} to manage file-systems in ${local.ns_type_name} ${local.ns_select_name}",
   ]
 
   #Optional

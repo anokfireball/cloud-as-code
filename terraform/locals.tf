@@ -24,6 +24,12 @@ loadBalancer:
   securityLists:
     ${oci_core_subnet.subnet_regional.id}: ${oci_core_security_list.security_list.id}
 EOF
+  oci_volume_provisioner_config = <<EOF
+auth:
+  useInstancePrincipals: true
+compartment: ${var.compartment_ocid}
+vcn: ${oci_core_vcn.vcn.id}
+EOF
 
   talos_base_configuration = <<-EOT
     machine:
@@ -77,6 +83,14 @@ EOF
            # https://oracle.github.io/cluster-api-provider-oci/gs/install-oci-ccm.html
            - https://github.com/oracle/oci-cloud-controller-manager/releases/download/${var.oracle_cloud_ccm_version}/oci-cloud-controller-manager-rbac.yaml
            - https://github.com/oracle/oci-cloud-controller-manager/releases/download/${var.oracle_cloud_ccm_version}/oci-cloud-controller-manager.yaml
+           - https://github.com/oracle/oci-cloud-controller-manager/releases/download/${var.oracle_cloud_ccm_version}/oci-csi-controller-driver.yaml
+           - https://github.com/oracle/oci-cloud-controller-manager/releases/download/${var.oracle_cloud_ccm_version}/oci-csi-node-driver.yaml
+           - https://github.com/oracle/oci-cloud-controller-manager/releases/download/${var.oracle_cloud_ccm_version}/oci-csi-node-rbac.yaml
+           # CRDs for CSI
+           - https://raw.githubusercontent.com/oracle/oci-cloud-controller-manager/refs/tags/${var.oracle_cloud_ccm_version}/manifests/container-storage-interface/storage-class.yaml
+           - https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/refs/tags/${var.external_snapshotter_version}/client/config/crd/snapshot.storage.k8s.io_volumesnapshotclasses.yaml
+           - https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/refs/tags/${var.external_snapshotter_version}/client/config/crd/snapshot.storage.k8s.io_volumesnapshotcontents.yaml
+           - https://raw.githubusercontent.com/kubernetes-csi/external-snapshotter/refs/tags/${var.external_snapshotter_version}/client/config/crd/snapshot.storage.k8s.io_volumesnapshots.yaml
        controllerManager:
          extraArgs:
            cloud-provider: external
@@ -94,6 +108,15 @@ EOF
              kind: Secret
              metadata:
                name: oci-cloud-controller-manager
+               namespace: kube-system
+         - name: oci-volume-provisioner
+           contents: |
+             apiVersion: v1
+             data:
+               config.yaml: ${base64encode(local.oci_volume_provisioner_config)}
+             kind: Secret
+             metadata:
+               name: oci-volume-provisioner
                namespace: kube-system
     EOT
 }

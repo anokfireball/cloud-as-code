@@ -69,6 +69,11 @@ variable "oracle_cloud_ccm_version" {
   type    = string
   default = "v1.30.0" # oci-cloud-controller-manager version
 }
+# https://github.com/kubernetes-csi/external-snapshotter/
+variable "external_snapshotter_version" {
+  type    = string
+  default = "v8.2.0" # external-snapshotter version
+}
 # https://github.com/siderolabs/talos-cloud-controller-manager
 variable "talos_ccm_version" {
   type    = string
