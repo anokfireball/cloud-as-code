@@ -27,3 +27,7 @@ spec:
   destination:
     name: in-cluster
     namespace: ingress-nginx-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

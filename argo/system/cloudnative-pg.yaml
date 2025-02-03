@@ -14,3 +14,7 @@ spec:
   destination:
     name: in-cluster
     namespace: cloudnative-pg-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

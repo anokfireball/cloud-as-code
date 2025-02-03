@@ -26,3 +26,8 @@ spec:
   destination:
     name: in-cluster
     namespace: external-dns-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+
