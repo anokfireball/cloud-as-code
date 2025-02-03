@@ -1,3 +1,26 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: gatus-postgresql
+  namespace: default
+  annotations:
+    argocd.argoproj.io/sync-wave: "4"
+spec:
+  imageName: ghcr.io/cloudnative-pg/postgresql:17.2-32@sha256:b17d21f8ec36add9b3c0ea3fb354d05f62a8fddf8ba65ae94e63ba77bc42202e
+  instances: 1
+  managed:
+    services:
+      disabledDefaultServices: ["ro", "r"]
+  bootstrap:
+    initdb:
+      database: gatus
+      owner: gatus
+      secret:
+        name: gatus-postgres-user
+  storage:
+    storageClass: oci-bv
+    size: 50Gi # smallest unit offered by OCI, massive overkill for this
+---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -30,11 +53,40 @@ spec:
               - secretName: gatus-tls
                 hosts:
                   - gatus.kthxbye.cyou
-          # desperately waiting for https://github.com/TwiN/helm-charts/pull/18
+          env:
+            SERVICE_DOMAIN:
+              valueFrom:
+                secretKeyRef:
+                  name: gatus-secrets
+                  key: SERVICE_DOMAIN
+            POSTGRES_USER:
+              valueFrom:
+                secretKeyRef:
+                  name: gatus-postgres-user
+                  key: username
+            POSTGRES_PASSWORD:
+              valueFrom:
+                secretKeyRef:
+                  name: gatus-postgres-user
+                  key: password
+          # waiting for https://github.com/TwiN/helm-charts/pull/18
           config:
+            storage:
+              type: postgres
+              path: "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@gatus-postgresql-rw:5432/gatus?sslmode=disable"
             endpoints:
-              - name: gatus
+              - name: gatus (self)
                 url: https://gatus.kthxbye.cyou
+                interval: 60s
+                conditions:
+                  - "[STATUS] == 200"
+              - name: Nextcloud
+                url: https://nextcloud.${SERVICE_DOMAIN}
+                interval: 60s
+                conditions:
+                  - "[STATUS] == 200"
+              - name: Bitwarden
+                url: https://bitwarden.${SERVICE_DOMAIN}
                 interval: 60s
                 conditions:
                   - "[STATUS] == 200"

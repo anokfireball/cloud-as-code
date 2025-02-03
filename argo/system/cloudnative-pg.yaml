@@ -18,3 +18,6 @@ spec:
     automated:
       prune: true
       selfHeal: true
+    # https://github.com/cloudnative-pg/charts/issues/325
+    syncOptions:
+      - ServerSideApply=true
