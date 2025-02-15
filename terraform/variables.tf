@@ -58,7 +58,7 @@ variable "talos_version" {
 # https://github.com/kubernetes/kubernetes
 variable "kubernetes_version" {
   type    = string
-  default = "v1.32.1" # kubernetes version
+  default = "v1.32.2" # kubernetes version
 }
 variable "instance_shape" {
   type    = string
