@@ -1,0 +1,65 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: oracle-ccm
+  namespace: argocd-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/oracle/oci-cloud-controller-manager.git
+    targetRevision: v1.31.0
+    path: manifests/cloud-controller-manager
+    directory:
+      recurse: true
+  destination:
+    name: in-cluster
+    namespace: kube-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: oracle-csi
+  namespace: argocd-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/oracle/oci-cloud-controller-manager.git
+    targetRevision: v1.31.0
+    path: manifests/container-storage-interface
+    directory:
+      recurse: true
+  destination:
+    name: in-cluster
+    namespace: kube-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: oracle-csi-snapshotter
+  namespace: argocd-system
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/kubernetes-csi/external-snapshotter.git
+    targetRevision: v8.2.0
+    path: client/config/crd
+    kustomize: {}
+  destination:
+    name: in-cluster
+    namespace: kube-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

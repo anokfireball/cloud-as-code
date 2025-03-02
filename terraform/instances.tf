@@ -1,13 +1,8 @@
-resource "random_pet" "node" {
-  count     = var.node_count
-  length    = 2
-  separator = "-"
-}
-
 resource "oci_core_instance" "node" {
-  for_each = { for idx, val in random_pet.node : idx => val }
+  count = var.node_count
+
   # choose the next availability domain which wasn't last
-  availability_domain = data.oci_identity_availability_domains.availability_domains.availability_domains[each.key % length(data.oci_identity_availability_domains.availability_domains.availability_domains)].name
+  availability_domain = data.oci_identity_availability_domains.availability_domains.availability_domains[count.index % length(data.oci_identity_availability_domains.availability_domains.availability_domains)].name
   compartment_id      = var.compartment_ocid
   shape               = var.instance_shape
   shape_config {
@@ -30,7 +25,7 @@ resource "oci_core_instance" "node" {
     recovery_action             = "RESTORE_INSTANCE"
   }
   #Optional
-  display_name = "${var.cluster_name}-control-plane-${each.value.id}"
+  display_name = "${var.cluster_name}-control-plane-${count.index}"
   launch_options {
     #Optional
     network_type            = local.instance_mode
@@ -57,5 +52,6 @@ resource "oci_core_instance" "node" {
   }
   metadata = {
     "ssh_authorized_keys" = file(var.ssh_public_key_path)
+    "user_data"           = data.cloudinit_config.k3s_tpl.rendered
   }
 }

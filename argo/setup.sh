@@ -13,6 +13,7 @@ fi
 kubectl config use-context $CONTEXT
 
 helm repo add argo-cd https://argoproj.github.io/argo-helm
+helm repo update argo-cd
 helm install argo-cd argo-cd/argo-cd --namespace $NAMESPACE --create-namespace --values $SCRIPT_DIR/system/argo-cd/values.yaml --version $ARGO_CHART_VERSION
 
 sops decrypt $SCRIPT_DIR/secrets/age-key.sops.yaml | kubectl apply -f -

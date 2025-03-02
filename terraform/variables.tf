@@ -98,20 +98,20 @@ variable "image_id" {
 # https://github.com/kubernetes/kubernetes
 variable "kubernetes_version" {
   type    = string
-  default = "v1.32.2" # kubernetes version
+  default = "v1.32.2"
 }
 # https://github.com/k3s-io/k3s
 variable "k3s_version" {
   type    = string
-  default = "v1.32.2+k3s1" # kubernetes version
+  default = "v1.32.2+k3s1"
 }
 # https://github.com/oracle/oci-cloud-controller-manager
-variable "oracle_cloud_ccm_version" {
+variable "oci_ccm_version" {
   type    = string
-  default = "v1.31.0" # oci-cloud-controller-manager version
+  default = "v1.31.0"
 }
 # https://github.com/kubernetes-csi/external-snapshotter/
 variable "external_snapshotter_version" {
   type    = string
-  default = "v8.2.0" # external-snapshotter version
+  default = "v8.2.0"
 }
