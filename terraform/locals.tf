@@ -1,19 +1,15 @@
 locals {
-  common_labels = {
-    "TalosCluster" = var.cluster_name
-  }
-  talos_install_image         = data.talos_image_factory_urls.this.urls.installer
   instance_mode               = "PARAVIRTUALIZED"
   talos_install_disk          = "/dev/sda"
   instance_kernel_arg_console = "ttyAMA0"
   # Example: https://raw.githubusercontent.com/oracle/oci-cloud-controller-manager/v1.26.0/manifests/provider-config-instance-principals-example.yaml
-  oci_config_ini            = <<EOF
+  oci_config_ini                = <<EOF
 [Global]
 compartment-id = ${var.compartment_ocid}
 region = ${var.region}
 use-instance-principals = true
 EOF
-  oci_cloud_provider_config = <<EOF
+  oci_cloud_provider_config     = <<EOF
 auth:
   useInstancePrincipals: true
 compartment: ${var.compartment_ocid}
@@ -66,7 +62,7 @@ EOF
             - console=console=${local.instance_kernel_arg_console}
             - talos.platform=oracle
          wipe: false
-         image: ${local.talos_install_image}
+         image: local.talos_install_image
     cluster:
        discovery:
          enabled: true
@@ -79,7 +75,6 @@ EOF
        externalCloudProvider:
          enabled: true
          manifests:
-           - https://raw.githubusercontent.com/siderolabs/talos-cloud-controller-manager/${var.talos_ccm_version}/docs/deploy/cloud-controller-manager.yml
            # https://oracle.github.io/cluster-api-provider-oci/gs/install-oci-ccm.html
            - https://github.com/oracle/oci-cloud-controller-manager/releases/download/${var.oracle_cloud_ccm_version}/oci-cloud-controller-manager-rbac.yaml
            - https://github.com/oracle/oci-cloud-controller-manager/releases/download/${var.oracle_cloud_ccm_version}/oci-cloud-controller-manager.yaml

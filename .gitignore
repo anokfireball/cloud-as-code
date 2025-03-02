@@ -1,7 +1,5 @@
-talos/image
-
-terraform/*.pem
 terraform/*.tfvars
+terraform/.terraform.lock.hcl
 terraform/.terraform/
 *.tfstate
 *.tfstate.*

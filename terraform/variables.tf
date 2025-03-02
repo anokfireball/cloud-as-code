@@ -18,8 +18,20 @@ variable "fingerprint" {
 }
 variable "private_key_path" {
   type      = string
-  default   = "~/.oci/oci_main_terraform.pem"
+  default   = "~/.oci/oci_api_key.pem"
   sensitive = true
+}
+variable "auth" {
+  type    = string
+  default = "SecurityToken"
+}
+variable "config_file_profile" {
+  type    = string
+  default = "DEFAULT"
+}
+variable "ssh_public_key_path" {
+  type    = string
+  default = "~/.ssh/is_rsa.pub"
 }
 variable "instance_availability_domain" {
   type    = string
@@ -28,15 +40,11 @@ variable "instance_availability_domain" {
 variable "region" {
   description = "the OCI region where resources will be created"
   type        = string
-  default     = null
+  default     = "eu-frankfurt-1"
 }
 variable "cluster_name" {
   type    = string
-  default = "oci"
-}
-variable "kube_apiserver_domain" {
-  type    = string
-  default = null
+  default = "cluster"
 }
 variable "cidr_blocks" {
   type    = set(string)
@@ -50,35 +58,6 @@ variable "subnet_block_regional" {
   type    = string
   default = "10.0.10.0/24"
 }
-# https://github.com/siderolabs/talos
-variable "talos_version" {
-  type    = string
-  default = "v1.9.3" # talos version
-}
-# https://github.com/kubernetes/kubernetes
-variable "kubernetes_version" {
-  type    = string
-  default = "v1.32.1" # kubernetes version
-}
-variable "instance_shape" {
-  type    = string
-  default = "VM.Standard.A1.Flex"
-}
-# https://github.com/oracle/oci-cloud-controller-manager
-variable "oracle_cloud_ccm_version" {
-  type    = string
-  default = "v1.30.0" # oci-cloud-controller-manager version
-}
-# https://github.com/kubernetes-csi/external-snapshotter/
-variable "external_snapshotter_version" {
-  type    = string
-  default = "v8.2.0" # external-snapshotter version
-}
-# https://github.com/siderolabs/talos-cloud-controller-manager
-variable "talos_ccm_version" {
-  type    = string
-  default = "v1.9.0" # talos-cloud-controller-manager version
-}
 variable "pod_subnet_block" {
   type    = string
   default = "10.32.0.0/12"
@@ -87,32 +66,52 @@ variable "service_subnet_block" {
   type    = string
   default = "10.200.0.0/22"
 }
+variable "instance_shape" {
+  type    = string
+  default = "VM.Standard.A1.Flex"
+}
 variable "architecture" {
   type    = string
   default = "arm64"
 }
-# https://github.com/siderolabs/extensions
-variable "talos_extensions" {
-  type = set(string)
-  default = [
-    "gvisor",
-    "tailscale",
-    "util-linux-tools"
-  ]
-}
-variable "controlplane_instance_count" {
+variable "node_count" {
   type    = number
   default = 3
 }
-variable "talos_image_oci_bucket_url" {
-  type     = string
-  nullable = false
-}
-variable "controlplane_instance_ocpus" {
+variable "node_ocpus" {
   type    = number
-  default = 4
+  default = 1
 }
-variable "controlplane_instance_memory_in_gbs" {
+variable "node_memory_in_gbs" {
   type    = string
   default = "8"
+}
+variable "boot_volume_size_in_gbs" {
+  type    = string
+  default = "50"
+}
+# oci compute image list --operating-system "Canonical Ubuntu" --operating-system-version "24.04" --shape "VM.Standard.A1.Flex" --query 'data[0].id'
+variable "image_id" {
+  type    = string
+  default = "ocid1.image.oc1.eu-frankfurt-1.aaaaaaaa6qjfirtoiqsvq4kybo66dmfr6t46vy6xbawdottjzp7eb6l4geoq"
+}
+# https://github.com/kubernetes/kubernetes
+variable "kubernetes_version" {
+  type    = string
+  default = "v1.32.2" # kubernetes version
+}
+# https://github.com/k3s-io/k3s
+variable "k3s_version" {
+  type    = string
+  default = "v1.32.2+k3s1" # kubernetes version
+}
+# https://github.com/oracle/oci-cloud-controller-manager
+variable "oracle_cloud_ccm_version" {
+  type    = string
+  default = "v1.31.0" # oci-cloud-controller-manager version
+}
+# https://github.com/kubernetes-csi/external-snapshotter/
+variable "external_snapshotter_version" {
+  type    = string
+  default = "v8.2.0" # external-snapshotter version
 }

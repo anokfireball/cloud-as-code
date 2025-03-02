@@ -13,38 +13,6 @@
   "customManagers": [
     {
       "customType": "regex",
-      "description": "Update talos version",
-      "fileMatch": [
-        "talos/setup.sh",
-        "talos/image_metadata.json",
-        "terraform/variables.tf"
-      ],
-      "matchStrings": [
-        "default = \"v(?<currentValue>\\d+\\.\\d+\\.\\d+)\" # talos version",
-        "\"operatingSystemVersion\": \"(?<currentValue>\\d+\\.\\d+\\.\\d+)\"",
-        "VERSION=(?<currentValue>\\d+\\.\\d+\\.\\d+)"
-      ],
-      "datasourceTemplate": "github-releases",
-      "packageNameTemplate": "siderolabs/talos",
-      "versioningTemplate": "semver",
-      "extractVersionTemplate": "^v(?<version>\\d+\\.\\d+\\.\\d+)$"
-    },
-    {
-      "customType": "regex",
-      "description": "Update talos CCM version",
-      "fileMatch": [
-        "terraform/variables.tf"
-      ],
-      "matchStrings": [
-        "default = \"v(?<currentValue>\\d+\\.\\d+\\.\\d+)\" # talos-cloud-controller-manager version"
-      ],
-      "datasourceTemplate": "github-releases",
-      "packageNameTemplate": "siderolabs/talos-cloud-controller-manager",
-      "versioningTemplate": "semver",
-      "extractVersionTemplate": "^v(?<version>\\d+\\.\\d+\\.\\d+)$"
-    },
-    {
-      "customType": "regex",
       "description": "Update oracle CCM version",
       "fileMatch": [
         "terraform/variables.tf"

@@ -1,12 +1,8 @@
 resource "oci_identity_dynamic_group" "oci-ccm" {
-  #Required
   name           = "${var.cluster_name}-oci-ccm"
   compartment_id = var.tenancy_ocid # tenancy_ocid, compartment_ocid and domain_ocid doesn't work
   description    = "Instance access"
   matching_rule  = "ALL {instance.compartment.id = '${var.compartment_ocid}'}"
-
-  #Optional
-  freeform_tags = local.common_labels
 }
 
 locals {
@@ -15,7 +11,6 @@ locals {
 }
 
 resource "oci_identity_policy" "oci-ccm" {
-  #Required
   name           = "${var.cluster_name}-oci-ccm"
   compartment_id = var.tenancy_ocid
   description    = "Instance access"
@@ -29,7 +24,4 @@ resource "oci_identity_policy" "oci-ccm" {
     "Allow dynamic-group ${oci_identity_dynamic_group.oci-ccm.name} to manage volumes in ${local.ns_type_name} ${local.ns_select_name}",
     "Allow dynamic-group ${oci_identity_dynamic_group.oci-ccm.name} to manage file-systems in ${local.ns_type_name} ${local.ns_select_name}",
   ]
-
-  #Optional
-  freeform_tags = local.common_labels
 }
