@@ -54,6 +54,8 @@ spec:
                 hosts:
                   - gatus.kthxbye.cyou
           env:
+            GATUS_CONFIG_PATH: /custom/custom.yaml
+            GATUS_CONFIG_FILE: /custom/custom.yaml
             SERVICE_DOMAIN:
               valueFrom:
                 secretKeyRef:
@@ -69,27 +71,11 @@ spec:
                 secretKeyRef:
                   name: gatus-postgres-user
                   key: password
-          # waiting for https://github.com/TwiN/helm-charts/pull/18
-          config:
-            storage:
-              type: postgres
-              path: "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@gatus-postgresql-rw:5432/gatus?sslmode=disable"
-            endpoints:
-              - name: gatus (self)
-                url: https://gatus.kthxbye.cyou
-                interval: 60s
-                conditions:
-                  - "[STATUS] == 200"
-              - name: Nextcloud
-                url: https://nextcloud.${SERVICE_DOMAIN}
-                interval: 60s
-                conditions:
-                  - "[STATUS] == 200"
-              - name: Bitwarden
-                url: https://bitwarden.${SERVICE_DOMAIN}
-                interval: 60s
-                conditions:
-                  - "[STATUS] == 200"
+          extraVolumeMounts:
+            - name: custom-config
+              mountPath: /custom
+              readOnly: true
+              existingConfigMap: gatus-config
   destination:
     name: in-cluster
     namespace: default
