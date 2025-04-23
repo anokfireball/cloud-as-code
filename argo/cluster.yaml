@@ -12,7 +12,7 @@ spec:
   project: default
   source:
     path: argo
-    repoURL: https://github.com/C0nsultant/cloud-as-code
+    repoURL: https://github.com/anokfireball/cloud-as-code
     targetRevision: main
     directory:
       recurse: true
