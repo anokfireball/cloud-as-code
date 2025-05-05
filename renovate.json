@@ -6,16 +6,16 @@
   "prHourlyLimit": 0,
   "prConcurrentLimit": 0,
   "argocd": {
-    "fileMatch": [
-      "argo/.+\\.ya?ml$"
+    "managerFilePatterns": [
+      "/argo/.+\\.ya?ml$/"
     ]
   },
   "customManagers": [
     {
       "customType": "regex",
       "description": "Update oracle CCM version",
-      "fileMatch": [
-        "terraform/variables.tf"
+      "managerFilePatterns": [
+        "/terraform/variables.tf/"
       ],
       "matchStrings": [
         "default = \"v(?<currentValue>\\d+\\.\\d+\\.\\d+)\" # oci-cloud-controller-manager version"
@@ -28,8 +28,8 @@
     {
       "customType": "regex",
       "description": "Update kubernetes version",
-      "fileMatch": [
-        "terraform/variables.tf"
+      "managerFilePatterns": [
+        "/terraform/variables.tf/"
       ],
       "matchStrings": [
         "default = \"v(?<currentValue>\\d+\\.\\d+\\.\\d+)\" # kubernetes version"
@@ -41,8 +41,8 @@
     }
   ],
   "kustomize": {
-    "fileMatch": [
-      "argo/.+kustomization\\.ya?ml$"
+    "managerFilePatterns": [
+      "/argo/.+kustomization\\.ya?ml$/"
     ]
   }
 }
