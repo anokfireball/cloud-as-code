@@ -13,31 +13,13 @@
   "customManagers": [
     {
       "customType": "regex",
-      "description": "Update oracle CCM version",
       "managerFilePatterns": [
-        "/terraform/variables.tf/"
+        "argo/**"
       ],
       "matchStrings": [
-        "default = \"v(?<currentValue>\\d+\\.\\d+\\.\\d+)\" # oci-cloud-controller-manager version"
+        "\\s*#\\s*renovate:\\s*datasource=(?<datasource>.*) depName=(?<depName>.*)\\s*\\n\\s*tag:\\s*\"(?<currentValue>.*)\"\\s*\\n\\s*sha:\\s*\"(?<currentDigest>sha256:[a-f0-9]+)\"\\s*"
       ],
-      "datasourceTemplate": "github-releases",
-      "packageNameTemplate": "oracle/oci-cloud-controller-manager",
-      "versioningTemplate": "semver",
-      "extractVersionTemplate": "^v(?<version>\\d+\\.\\d+\\.\\d+)$"
-    },
-    {
-      "customType": "regex",
-      "description": "Update kubernetes version",
-      "managerFilePatterns": [
-        "/terraform/variables.tf/"
-      ],
-      "matchStrings": [
-        "default = \"v(?<currentValue>\\d+\\.\\d+\\.\\d+)\" # kubernetes version"
-      ],
-      "datasourceTemplate": "github-releases",
-      "packageNameTemplate": "kubernetes/kubernetes",
-      "versioningTemplate": "semver",
-      "extractVersionTemplate": "^v(?<version>\\d+\\.\\d+\\.\\d+)$"
+      "versioningTemplate": "semver"
     }
   ],
   "kustomize": {
