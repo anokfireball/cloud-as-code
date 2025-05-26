@@ -17,7 +17,7 @@
         "argo/**"
       ],
       "matchStrings": [
-        "\\s*#\\s*renovate:\\s*datasource=(?<datasource>.*) depName=(?<depName>.*)\\s*\\n\\s*tag:\\s*\"(?<currentValue>.*)\"\\s*\\n\\s*sha:\\s*\"(?<currentDigest>sha256:[a-f0-9]+)\"\\s*"
+        "\\s*#\\s*renovate:\\s*datasource=(?<datasource>.*) depName=(?<depName>.*)\\s*\\n\\s*tag:\\s*\"(?<currentValue>.*)\"\\s*"
       ],
       "versioningTemplate": "semver"
     }
