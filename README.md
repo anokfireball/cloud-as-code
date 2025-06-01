@@ -56,6 +56,12 @@ At the highest possible level, this repo and CaC workflow consists of two parts:
         <td></td>
     </tr>
     <tr>
+        <td><img width="32" src="https://raw.githubusercontent.com/rancher/ui/refs/heads/master/public/assets/images/logos/main.svg"></td>
+        <td><a href="https://github.com/oracle/oci-cloud-controller-manager">system-upgrade-controller</a></td>
+        <td>System Upgrade Controller</td>
+        <td></td>
+    </tr>
+    <tr>
         <td><img width="32" src="https://raw.githubusercontent.com/kubernetes-sigs/external-dns/refs/heads/master/docs/img/external-dns.png"></td>
         <td><a href="https://kubernetes-sigs.github.io/external-dns/">external-dns</a></td>
         <td>DNS Management Automation</td>
