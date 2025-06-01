@@ -18,3 +18,23 @@ spec:
     automated:
       prune: true
       selfHeal: true
+---
+apiVersion: upgrade.cattle.io/v1
+kind: Plan
+metadata:
+  name: k3s
+  namespace: cattle-system
+  labels:
+    k3s-upgrade: server
+spec:
+  concurrency: 1
+  version: v1.32.2+k3s1
+  nodeSelector:
+    matchExpressions:
+      - {key: node-role.kubernetes.io/control-plane, operator: Exists}
+  serviceAccountName: system-upgrade-controller
+  drain:
+    force: true
+    skipWaitForDeleteTimeout: 60
+  upgrade:
+    image: rancher/k3s-upgrade
