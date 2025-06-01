@@ -28,7 +28,8 @@ metadata:
     k3s-upgrade: server
 spec:
   concurrency: 1
-  version: v1.32.2+k3s1
+  # renovate: datasource=github-releases depName=k3s-io/k3s
+  version: "v1.32.2+k3s1"
   nodeSelector:
     matchExpressions:
       - {key: node-role.kubernetes.io/control-plane, operator: Exists}
