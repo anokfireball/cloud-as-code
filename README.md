@@ -91,6 +91,12 @@ At the highest possible level, this repo and CaC workflow consists of two parts:
         <td>Hot-Reload for ALL Workloads</td>
         <td></td>
     </tr>
+    <tr>
+        <td><img width="32" src="https://raw.githubusercontent.com/tailscale/tailscale/refs/heads/main/client/web/src/assets/icons/tailscale-icon.svg"></td>
+        <td><a href="https://github.com/tailscale/tailscale/tree/main/cmd/k8s-operator">Tailscale</a></td>
+        <td>Overlay Mesh VPN Operator</td>
+        <td></td>
+    </tr>
 </table>
 
 ### 👨‍💻 User-Level

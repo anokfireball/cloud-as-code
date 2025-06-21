@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: tailscale-operator
+  namespace: argocd-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: default
+  sources:
+    - repoURL: https://pkgs.tailscale.com/helmcharts
+      chart: tailscale-operator
+      targetRevision: 1.84.2
+      helm:
+        valuesObject:
+          operatorConfig:
+            defaultTags:
+              - "tag:k8s-operator"
+              - "tag:k8s-oci"
+            hostname: "tailscale-operator-oci"
+          proxyConfig:
+            defaultTags: "tag:k8s,tag:k8s-oci"
+  destination:
+    name: in-cluster
+    namespace: tailscale
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
