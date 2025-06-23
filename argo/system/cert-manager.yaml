@@ -13,6 +13,9 @@ spec:
       targetRevision: v1.18.1
       helm:
         valuesObject:
+          global:
+            rbac:
+              disableHTTPChallengesRole: true
           crds:
             enabled: true
   destination:
