@@ -115,3 +115,10 @@ variable "external_snapshotter_version" {
   type    = string
   default = "v8.2.0"
 }
+
+variable "tailscale_auth_key" {
+  description = "Tailscale authentication key"
+  type        = string
+  sensitive   = true
+}
+

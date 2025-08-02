@@ -30,4 +30,11 @@ data "cloudinit_config" "k3s_tpl" {
       oci_volume_provisioner_config     = base64encode(local.oci_volume_provisioner_config),
     })
   }
+
+  part {
+    content_type = "text/x-shellscript"
+    content = templatefile("${path.module}/tailscale-install.sh", {
+      tailscale_auth_key = var.tailscale_auth_key
+    })
+  }
 }

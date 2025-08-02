@@ -37,6 +37,7 @@ At the highest possible level, this repo and CaC workflow consists of two parts:
 | [k3s](https://k3s.io/)                           | k8s _Distribution_ / Install Mechanism | stacked HA controlplanes                                                                                            |
 | [ArgoCD](https://argo-cd.readthedocs.io/)        | GitOps Automation inside the Cluster   |                                                                                                                     |
 | [SOPS](https://getsops.io/)                      | Secrets Management                     | via [ksops](https://github.com/viaduct-ai/kustomize-sops), using [age](https://age-encryption.org/) rather than pgp |
+| [tailscale](https://tailscale.com/)              | Overlay Mesh VPN                       |                                                                                                                     |
 
 ## 📱 Applications
 
@@ -89,12 +90,6 @@ At the highest possible level, this repo and CaC workflow consists of two parts:
         <td><img width="32" src="https://raw.githubusercontent.com/stakater/Reloader/refs/heads/master/theme_override/resources/assets/images/favicon.svg"></td>
         <td><a href="https://docs.stakater.com/reloader/">reloader</a></td>
         <td>Hot-Reload for ALL Workloads</td>
-        <td></td>
-    </tr>
-    <tr>
-        <td><img width="32" src="https://raw.githubusercontent.com/tailscale/tailscale/refs/heads/main/client/web/src/assets/icons/tailscale-icon.svg"></td>
-        <td><a href="https://github.com/tailscale/tailscale/tree/main/cmd/k8s-operator">Tailscale</a></td>
-        <td>Overlay Mesh VPN Operator</td>
         <td></td>
     </tr>
 </table>
