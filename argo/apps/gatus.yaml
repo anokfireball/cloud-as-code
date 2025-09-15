@@ -33,7 +33,7 @@ spec:
   sources:
     - repoURL: https://twin.github.io/helm-charts
       chart: gatus
-      targetRevision: 1.4.0
+      targetRevision: 1.4.1
       helm:
         valuesObject:
           image:
