@@ -39,7 +39,7 @@ spec:
           image:
             repository: ghcr.io/twin/gatus
             # renovate: datasource=docker depName=ghcr.io/twin/gatus
-            tag: "v5.21.0"
+            tag: "v5.25.2"
           annotations:
             reloader.stakater.com/auto: "true"
           ingress:
