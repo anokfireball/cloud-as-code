@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/oracle/oci-cloud-controller-manager.git
-    targetRevision: v1.32.0
+    targetRevision: v1.33.0
     path: manifests/cloud-controller-manager
     directory:
       recurse: true
@@ -32,7 +32,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/oracle/oci-cloud-controller-manager.git
-    targetRevision: v1.32.0
+    targetRevision: v1.33.0
     path: manifests/container-storage-interface
     directory:
       recurse: true
