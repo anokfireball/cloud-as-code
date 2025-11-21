@@ -10,7 +10,7 @@ spec:
   sources:
     - repoURL: http://charts.rancher.io
       chart: system-upgrade-controller
-      targetRevision: 107.0.1
+      targetRevision: 108.0.0
   destination:
     name: in-cluster
     namespace: cattle-system
