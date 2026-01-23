@@ -71,7 +71,7 @@ spec:
                 secretKeyRef:
                   name: gatus-postgres-user
                   key: password
-          externalConfigMap: gatus-config
+          externalConfigMap: gatus
   destination:
     name: in-cluster
     namespace: default
