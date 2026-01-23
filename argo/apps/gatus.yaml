@@ -56,8 +56,6 @@ spec:
                 hosts:
                   - gatus.kthxbye.cyou
           env:
-            GATUS_CONFIG_PATH: /custom/custom.yaml
-            GATUS_CONFIG_FILE: /custom/custom.yaml
             SERVICE_DOMAIN:
               valueFrom:
                 secretKeyRef:
@@ -73,11 +71,7 @@ spec:
                 secretKeyRef:
                   name: gatus-postgres-user
                   key: password
-          extraVolumeMounts:
-            - name: custom-config
-              mountPath: /custom
-              readOnly: true
-              existingConfigMap: gatus-config
+          externalConfigMap: gatus-config
   destination:
     name: in-cluster
     namespace: default
