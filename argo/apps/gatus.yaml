@@ -48,7 +48,7 @@ spec:
             route:
               enabled: true
               parentRefs:
-                - name: nginx
+                - name: envoy
                   namespace: default
               hosts:
                 - gatus.kthxbye.cyou

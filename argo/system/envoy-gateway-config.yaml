@@ -1,7 +1,7 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: GatewayClass
 metadata:
-  name: nginx
+  name: envoy
   annotations:
     argocd.argoproj.io/sync-wave: "5"
 spec:
@@ -33,13 +33,13 @@ spec:
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
-  name: nginx
+  name: envoy
   namespace: default
   annotations:
     argocd.argoproj.io/sync-wave: "5"
     cert-manager.io/cluster-issuer: letsencrypt
 spec:
-  gatewayClassName: nginx
+  gatewayClassName: envoy
   listeners:
     - name: http
       protocol: HTTP

@@ -23,7 +23,7 @@ At the highest possible level, this repo and CaC workflow consists of two parts:
   This includes the partial infrastructure bootstrapping on OCI, installation of a base OS and setup of a kubernetes distribution.
   After completion of this stage, the cluster is ready and capable of running workloads.
 - [argo](argo) contains the final stage 2 GitOps cluster configuration.
-  This includes everything running _inside_ kubernetes in the cluster and ranges from basic system infrastructure like [ingress](https://kubernetes.github.io/ingress-nginx/), [CCM](https://github.com/oracle/oci-cloud-controller-manager/tree/master/manifests/cloud-controller-manager) and [CSI](https://github.com/oracle/oci-cloud-controller-manager/tree/master/manifests/container-storage-interface) to more user-style applications such as [uptime monitoring](https://gatus.io/) apps.
+  This includes everything running _inside_ kubernetes in the cluster and ranges from basic system infrastructure like [Envoy Gateway](https://gateway.envoyproxy.io/), [CCM](https://github.com/oracle/oci-cloud-controller-manager/tree/master/manifests/cloud-controller-manager) and [CSI](https://github.com/oracle/oci-cloud-controller-manager/tree/master/manifests/container-storage-interface) to more user-style applications such as [uptime monitoring](https://gatus.io/) apps.
   The argo installation on the cluster is not yet performed automatically, but could also be triggered from stage 1 easily.
   The contained argo applications are automatically installed and/or reconciled on the cluster without* user interaction.
   After completion of this stage, the cluster is fully set up and performs its monitoring and alerting duties.
@@ -75,10 +75,10 @@ At the highest possible level, this repo and CaC workflow consists of two parts:
         <td>Let's Encrypt via ACME DNS</td>
     </tr>
     <tr>
-        <td><img width="32" src="https://raw.githubusercontent.com/nginx/nginx.org/refs/heads/main/img/ingress_logo.svg"></td>
-        <td><a href="https://kubernetes.github.io/ingress-nginx/">ingress-nginx</a></td>
-        <td>Ingress Controller</td>
-        <td></td>
+        <td><img width="32" src="https://gateway.envoyproxy.io/icons/logo.svg"></td>
+        <td><a href="https://gateway.envoyproxy.io/">Envoy Gateway</a></td>
+        <td>Gateway API implementation and ingress</td>
+        <td>Replaces the legacy ingress controller</td>
     </tr>
     <tr>
         <td><img width="32" src="https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg.github.io/refs/heads/main/assets/images/hero_image.svg"></td>
