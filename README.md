@@ -1,5 +1,3 @@
-<div align="center">
-
 ![Cloud-as-Code logo](logo.png "Cloud-as-Code logo")
 
 <img src="" alt="Node Uptime">
@@ -58,7 +56,7 @@ At the highest possible level, this repo and CaC workflow consists of two parts:
     </tr>
     <tr>
         <td><img width="32" src="https://raw.githubusercontent.com/rancher/ui/refs/heads/master/public/assets/images/logos/main.svg"></td>
-        <td><a href="https://github.com/oracle/oci-cloud-controller-manager">system-upgrade-controller</a></td>
+        <td><a href="https://github.com/rancher/system-upgrade-controller">system-upgrade-controller</a></td>
         <td>System Upgrade Controller</td>
         <td></td>
     </tr>
@@ -75,10 +73,10 @@ At the highest possible level, this repo and CaC workflow consists of two parts:
         <td>Let's Encrypt via ACME DNS</td>
     </tr>
     <tr>
-        <td><img width="32" src="https://gateway.envoyproxy.io/icons/logo.svg"></td>
+        <td><img width="32" src="https://raw.githubusercontent.com/envoyproxy/gateway/refs/heads/main/site/assets/icons/logo.svg"></td>
         <td><a href="https://gateway.envoyproxy.io/">Envoy Gateway</a></td>
-        <td>Gateway API implementation and ingress</td>
-        <td>Replaces the legacy ingress controller</td>
+        <td>Gateway API & Ingress</td>
+        <td></td>
     </tr>
     <tr>
         <td><img width="32" src="https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg.github.io/refs/heads/main/assets/images/hero_image.svg"></td>
