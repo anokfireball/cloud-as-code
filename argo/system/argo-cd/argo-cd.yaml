@@ -12,6 +12,7 @@ spec:
       chart: argo-cd
       targetRevision: 9.4.10
       helm:
+        skipCrds: true
         valueFiles:
           - $values/argo/system/argo-cd/values.yaml
     - repoURL: https://github.com/anokfireball/cloud-as-code
