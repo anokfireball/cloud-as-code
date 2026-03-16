@@ -27,7 +27,7 @@ metadata:
   name: gatus
   namespace: argocd-system
   annotations:
-    argocd.argoproj.io/sync-wave: "5"
+    argocd.argoproj.io/sync-wave: "6"
 spec:
   project: default
   sources:
@@ -43,18 +43,16 @@ spec:
           annotations:
             reloader.stakater.com/auto: "true"
           ingress:
-            enabled: true
-            ingressClassName: nginx
-            annotations:
-              cert-manager.io/cluster-issuer: letsencrypt
-            path: /
-            pathType: Prefix
-            hosts:
-              - gatus.kthxbye.cyou
-            tls:
-              - secretName: gatus-tls
-                hosts:
-                  - gatus.kthxbye.cyou
+            enabled: false
+          gateway:
+            route:
+              enabled: true
+              parentRefs:
+                - name: nginx
+                  namespace: default
+              hosts:
+                - gatus.kthxbye.cyou
+              path: /
           env:
             SERVICE_DOMAIN:
               valueFrom:
