@@ -88,7 +88,7 @@ variable "node_memory_in_gbs" {
 }
 variable "boot_volume_size_in_gbs" {
   type    = string
-  default = "50"
+  default = "66"
 }
 # oci compute image list --operating-system "Canonical Ubuntu" --operating-system-version "24.04" --shape "VM.Standard.A1.Flex" --query 'data[0].id'
 variable "image_id" {
@@ -121,4 +121,3 @@ variable "tailscale_auth_key" {
   type        = string
   sensitive   = true
 }
-

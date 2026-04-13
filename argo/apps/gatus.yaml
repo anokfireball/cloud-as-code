@@ -7,7 +7,13 @@ metadata:
     argocd.argoproj.io/sync-wave: "4"
 spec:
   imageName: ghcr.io/cloudnative-pg/postgresql:17.2-32@sha256:b17d21f8ec36add9b3c0ea3fb354d05f62a8fddf8ba65ae94e63ba77bc42202e
-  instances: 1
+  instances: 3
+  enablePDB: true
+  # Keep one instance per node; without spare nodes, a lost node leaves Gatus degraded.
+  affinity:
+    enablePodAntiAffinity: true
+    podAntiAffinityType: required
+    topologyKey: kubernetes.io/hostname
   managed:
     services:
       disabledDefaultServices: ["ro", "r"]
@@ -18,8 +24,8 @@ spec:
       secret:
         name: gatus-postgres-user
   storage:
-    storageClass: oci-bv
-    size: 50Gi # smallest unit offered by OCI, massive overkill for this
+    storageClass: local-path
+    size: 15Gi
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application

@@ -78,6 +78,9 @@ k3s_install_params+=("--disable-cloud-controller")
 k3s_install_params+=("--disable servicelb")
 k3s_install_params+=("--kubelet-arg cloud-provider=external")
 k3s_install_params+=("--kubelet-arg provider-id=oci://$instance_ocid")
+# Keep unused image layers from crowding the root filesystem that local-path uses.
+k3s_install_params+=("--kubelet-arg image-gc-high-threshold=70")
+k3s_install_params+=("--kubelet-arg image-gc-low-threshold=60")
 # LB created via CCM uses :10256/healthz for healthcheck, but this is not exposed by default
 k3s_install_params+=("--kube-proxy-arg healthz-bind-address=0.0.0.0:10256")
 
