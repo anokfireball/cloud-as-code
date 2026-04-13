@@ -20,6 +20,20 @@
         "\\s*#\\s*renovate:\\s*datasource=(?<datasource>.*) depName=(?<depName>.*)\\s*\\n\\s*\\w+:\\s*\"(?<currentValue>.*)\"\\s*"
       ],
       "versioningTemplate": "semver"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "argo/system/oracle-*/kustomization.yaml",
+        "terraform/variables.tf"
+      ],
+      "matchStrings": [
+        "\\s*#\\s*renovate:\\s*datasource=github-tags depName=oracle/oci-cloud-controller-manager\\s*\\n\\s*-\\s*https://raw\\.githubusercontent\\.com/oracle/oci-cloud-controller-manager/refs/tags/(?<currentValue>v\\d+\\.\\d+\\.\\d+)/[^\\s]+",
+        "\\s*#\\s*renovate:\\s*datasource=github-tags depName=oracle/oci-cloud-controller-manager\\s*\\n\\s*variable\\s+\"oci_ccm_version\"\\s*\\{(?:\\s*\\n\\s*[^\\n]+)*?\\s*\\n\\s*default\\s*=\\s*\"(?<currentValue>v\\d+\\.\\d+\\.\\d+)\""
+      ],
+      "datasourceTemplate": "github-tags",
+      "depNameTemplate": "oracle/oci-cloud-controller-manager",
+      "versioningTemplate": "semver"
     }
   ],
   "kustomize": {

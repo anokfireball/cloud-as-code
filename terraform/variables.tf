@@ -106,6 +106,7 @@ variable "k3s_version" {
   default = "v1.32.2+k3s1"
 }
 # https://github.com/oracle/oci-cloud-controller-manager
+# renovate: datasource=github-tags depName=oracle/oci-cloud-controller-manager
 variable "oci_ccm_version" {
   type    = string
   default = "v1.34.0"
