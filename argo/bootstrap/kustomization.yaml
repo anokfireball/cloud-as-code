@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - namespaces/cattle-system.yaml
+  - namespaces/cert-manager.yaml
+  - namespaces/cloudnative-pg.yaml
+  - namespaces/envoy-gateway-system.yaml
+  - namespaces/external-dns.yaml
+  - apps/secrets.yaml
+  - apps/argo-cd.yaml
+  - apps/oracle-ccm.yaml
+  - apps/system-upgrade-controller.yaml
+  - apps/cloudnative-pg.yaml
+  - apps/envoy-gateway-crds.yaml
+  - apps/reloader.yaml
+  - apps/cert-manager.yaml
+  - apps/envoy-gateway.yaml
+  - apps/external-dns.yaml
+  - apps/gatus.yaml
