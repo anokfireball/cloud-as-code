@@ -1,22 +1,26 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: system-upgrade-controller
+  name: argo-cd
   namespace: argocd-system
   annotations:
     argocd.argoproj.io/sync-wave: "2"
 spec:
   project: default
   sources:
-    - repoURL: http://charts.rancher.io
-      chart: system-upgrade-controller
-      targetRevision: 109.0.0
+    - repoURL: https://argoproj.github.io/argo-helm
+      chart: argo-cd
+      targetRevision: 9.5.0
+      helm:
+        skipCrds: true
+        valueFiles:
+          - $values/argo/system/argo-cd/values.yaml
     - repoURL: https://github.com/anokfireball/cloud-as-code
       targetRevision: main
-      path: argo/system/system-upgrade-controller
+      ref: values
   destination:
     name: in-cluster
-    namespace: cattle-system
+    namespace: argocd-system
   syncPolicy:
     automated:
       prune: true

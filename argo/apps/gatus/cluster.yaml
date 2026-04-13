@@ -1,0 +1,28 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: gatus-postgresql
+  namespace: default
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  imageName: ghcr.io/cloudnative-pg/postgresql:17.2-32@sha256:b17d21f8ec36add9b3c0ea3fb354d05f62a8fddf8ba65ae94e63ba77bc42202e
+  instances: 3
+  enablePDB: true
+  # Keep one instance per node; without spare nodes, a lost node leaves Gatus degraded.
+  affinity:
+    enablePodAntiAffinity: true
+    podAntiAffinityType: required
+    topologyKey: kubernetes.io/hostname
+  managed:
+    services:
+      disabledDefaultServices: ["ro", "r"]
+  bootstrap:
+    initdb:
+      database: gatus
+      owner: gatus
+      secret:
+        name: gatus-postgres-user
+  storage:
+    storageClass: local-path
+    size: 15Gi
