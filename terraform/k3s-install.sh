@@ -53,6 +53,13 @@ applyCsiManifests() {
   kubectl apply -f $BASE_URL/snapshot.storage.k8s.io_volumesnapshots.yaml
 }
 
+patchOracleControlPlaneWorkloads() {
+  local patch='{"spec":{"template":{"spec":{"nodeSelector":null,"affinity":{"nodeAffinity":{"requiredDuringSchedulingIgnoredDuringExecution":{"nodeSelectorTerms":[{"matchExpressions":[{"key":"node-role.kubernetes.io/control-plane","operator":"Exists"}]}]}}}}}}}'
+
+  kubectl patch daemonset oci-cloud-controller-manager -n kube-system --type merge -p "$patch"
+  kubectl patch deployment csi-oci-controller -n kube-system --type merge -p "$patch"
+}
+
 # Disable firewall
 /usr/sbin/netfilter-persistent stop
 /usr/sbin/netfilter-persistent flush
@@ -95,6 +102,7 @@ if [[ "${first_instance_id}" == "$instance_id" ]]; then
   applyCcmSecrets
   applyCcmManifests
   applyCsiManifests
+  patchOracleControlPlaneWorkloads
 else
   wait_lb
   until (curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=${k3s_version} K3S_TOKEN=${k3s_token} sh -s - --server https://${k3s_url}:6443 $INSTALL_PARAMS); do
@@ -102,9 +110,6 @@ else
     sleep 2
   done
 fi
-
-# OCI CCM wants this, this cluster is single-purpose and I don't want to patch the CCM
-kubectl label nodes --all node-role.kubernetes.io/control-plane='' --overwrite
 
 until kubectl get pods -A | grep 'Running'; do
   echo 'Waiting for k3s startup'

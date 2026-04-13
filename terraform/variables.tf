@@ -108,7 +108,7 @@ variable "k3s_version" {
 # https://github.com/oracle/oci-cloud-controller-manager
 variable "oci_ccm_version" {
   type    = string
-  default = "v1.31.0"
+  default = "v1.34.0"
 }
 # https://github.com/kubernetes-csi/external-snapshotter/
 variable "external_snapshotter_version" {

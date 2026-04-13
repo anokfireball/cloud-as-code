@@ -8,11 +8,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/oracle/oci-cloud-controller-manager.git
-    targetRevision: v1.34.0
-    path: manifests/cloud-controller-manager
-    directory:
-      recurse: true
+    repoURL: https://github.com/anokfireball/cloud-as-code
+    targetRevision: main
+    path: argo/system/oracle-ccm
   destination:
     name: in-cluster
     namespace: kube-system
@@ -31,11 +29,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/oracle/oci-cloud-controller-manager.git
-    targetRevision: v1.34.0
-    path: manifests/container-storage-interface
-    directory:
-      recurse: true
+    repoURL: https://github.com/anokfireball/cloud-as-code
+    targetRevision: main
+    path: argo/system/oracle-csi
   destination:
     name: in-cluster
     namespace: kube-system
