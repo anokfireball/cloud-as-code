@@ -105,13 +105,16 @@ variable "k3s_version" {
   type    = string
   default = "v1.32.2+k3s1"
 }
-variable "gatus_push_urls" {
-  type      = map(string)
+variable "gatus_push_targets" {
+  type = map(object({
+    url          = string
+    bearer_token = string
+  }))
   sensitive = true
 
   validation {
     condition = length(setsubtract(
-      toset(keys(var.gatus_push_urls)),
+      toset(keys(var.gatus_push_targets)),
       toset([
         "${var.cluster_name}-control-plane-0",
         "${var.cluster_name}-control-plane-1",
@@ -123,9 +126,16 @@ variable "gatus_push_urls" {
         "${var.cluster_name}-control-plane-1",
         "${var.cluster_name}-control-plane-2",
       ]),
-      toset(keys(var.gatus_push_urls))
+      toset(keys(var.gatus_push_targets))
     )) == 0
-    error_message = "gatus_push_urls must contain exactly these keys: ${var.cluster_name}-control-plane-0, ${var.cluster_name}-control-plane-1, and ${var.cluster_name}-control-plane-2."
+    error_message = "gatus_push_targets must contain exactly these keys: ${var.cluster_name}-control-plane-0, ${var.cluster_name}-control-plane-1, and ${var.cluster_name}-control-plane-2."
+  }
+
+  validation {
+    condition = alltrue([
+      for target in values(var.gatus_push_targets) : trimspace(target.url) != "" && trimspace(target.bearer_token) != ""
+    ])
+    error_message = "Each gatus_push_targets entry must include non-empty url and bearer_token values."
   }
 }
 variable "gatus_push_schedule" {

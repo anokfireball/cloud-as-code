@@ -25,7 +25,7 @@ data "cloudinit_config" "k3s_tpl" {
       k3s_url                           = oci_network_load_balancer_network_load_balancer.network_load_balancer.ip_addresses[0].ip_address,
       oci_ccm_version                   = var.oci_ccm_version,
       external_snapshotter_version      = var.external_snapshotter_version,
-      gatus_push_urls_base64            = base64encode(jsonencode(var.gatus_push_urls)),
+      gatus_push_targets_base64         = base64encode(jsonencode(var.gatus_push_targets)),
       gatus_push_schedule               = var.gatus_push_schedule,
       oci_config_ini                    = base64encode(local.oci_config_ini),
       oci_cloud_provider_config         = base64encode(local.oci_cloud_provider_config),

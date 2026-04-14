@@ -67,25 +67,26 @@ set -euo pipefail
 
 source /etc/default/gatus-push
 
-if [[ -z "$${GATUS_PUSH_URL:-}" ]]; then
-  echo "GATUS_PUSH_URL is missing" >&2
+if [[ -z "$${GATUS_PUSH_URL:-}" || -z "$${GATUS_PUSH_BEARER_TOKEN:-}" ]]; then
+  echo "GATUS_PUSH_URL or GATUS_PUSH_BEARER_TOKEN is missing" >&2
   exit 1
 fi
 
-curl --fail --show-error --silent --max-time 10 "$GATUS_PUSH_URL"
+curl --fail --show-error --silent --max-time 10 --globoff -X POST "$GATUS_PUSH_URL" -H "Authorization: Bearer $GATUS_PUSH_BEARER_TOKEN"
 EOF
 }
 
 writeGatusPushEnv() {
-  local url
-  url=$(printf '%s' '${gatus_push_urls_base64}' | base64 -d | jq -r --arg instance_display_name "$instance_display_name" '.[$instance_display_name] // empty')
+  local url bearer_token
+  url=$(printf '%s' '${gatus_push_targets_base64}' | base64 -d | jq -r --arg instance_display_name "$instance_display_name" '.[$instance_display_name].url // empty')
+  bearer_token=$(printf '%s' '${gatus_push_targets_base64}' | base64 -d | jq -r --arg instance_display_name "$instance_display_name" '.[$instance_display_name].bearer_token // empty')
 
-  if [[ -z "$url" ]]; then
-    echo "No Gatus push URL configured for node $instance_display_name" >&2
+  if [[ -z "$url" || -z "$bearer_token" ]]; then
+    echo "No Gatus push URL or bearer token configured for node $instance_display_name" >&2
     exit 1
   fi
 
-  printf 'GATUS_PUSH_URL=%q\n' "$url" | install -m 0600 /dev/stdin /etc/default/gatus-push
+  printf 'GATUS_PUSH_URL=%q\nGATUS_PUSH_BEARER_TOKEN=%q\n' "$url" "$bearer_token" | install -m 0600 /dev/stdin /etc/default/gatus-push
 }
 
 writeGatusPushUnits() {
