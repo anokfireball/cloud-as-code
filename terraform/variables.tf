@@ -105,6 +105,41 @@ variable "k3s_version" {
   type    = string
   default = "v1.32.2+k3s1"
 }
+variable "gatus_push_urls" {
+  type      = map(string)
+  sensitive = true
+
+  validation {
+    condition = length(setsubtract(
+      toset(keys(var.gatus_push_urls)),
+      toset([
+        "${var.cluster_name}-control-plane-0",
+        "${var.cluster_name}-control-plane-1",
+        "${var.cluster_name}-control-plane-2",
+      ])
+    )) == 0 && length(setsubtract(
+      toset([
+        "${var.cluster_name}-control-plane-0",
+        "${var.cluster_name}-control-plane-1",
+        "${var.cluster_name}-control-plane-2",
+      ]),
+      toset(keys(var.gatus_push_urls))
+    )) == 0
+    error_message = "gatus_push_urls must contain exactly these keys: ${var.cluster_name}-control-plane-0, ${var.cluster_name}-control-plane-1, and ${var.cluster_name}-control-plane-2."
+  }
+}
+variable "gatus_push_schedule" {
+  type    = string
+  default = "*:0/5"
+
+  validation {
+    condition = trimspace(var.gatus_push_schedule) != "" && can(regex(
+      "^[0-9A-Za-z*:,./_+~ -]+$",
+      var.gatus_push_schedule,
+    ))
+    error_message = "gatus_push_schedule must be non-empty and contain only characters commonly used in systemd OnCalendar expressions (letters, numbers, spaces, and * , . / : _ + ~ -)."
+  }
+}
 # https://github.com/oracle/oci-cloud-controller-manager
 # renovate: datasource=github-tags depName=oracle/oci-cloud-controller-manager
 variable "oci_ccm_version" {

@@ -60,6 +60,62 @@ patchOracleControlPlaneWorkloads() {
   kubectl patch deployment csi-oci-controller -n kube-system --type merge -p "$patch"
 }
 
+writeGatusPushScript() {
+  install -m 0755 /dev/stdin /usr/local/bin/gatus-push <<'EOF'
+#!/bin/bash
+set -euo pipefail
+
+source /etc/default/gatus-push
+
+if [[ -z "$${GATUS_PUSH_URL:-}" ]]; then
+  echo "GATUS_PUSH_URL is missing" >&2
+  exit 1
+fi
+
+curl --fail --show-error --silent --max-time 10 "$GATUS_PUSH_URL"
+EOF
+}
+
+writeGatusPushEnv() {
+  local url
+  url=$(printf '%s' '${gatus_push_urls_base64}' | base64 -d | jq -r --arg instance_display_name "$instance_display_name" '.[$instance_display_name] // empty')
+
+  if [[ -z "$url" ]]; then
+    echo "No Gatus push URL configured for node $instance_display_name" >&2
+    exit 1
+  fi
+
+  printf 'GATUS_PUSH_URL=%q\n' "$url" | install -m 0600 /dev/stdin /etc/default/gatus-push
+}
+
+writeGatusPushUnits() {
+  install -m 0644 /dev/stdin /etc/systemd/system/gatus-push.service <<'EOF'
+[Unit]
+Description=Push node health to Gatus external endpoint
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/gatus-push
+EOF
+
+  install -m 0644 /dev/stdin /etc/systemd/system/gatus-push.timer <<EOF
+[Unit]
+Description=Run Gatus node health push on a schedule
+
+[Timer]
+OnCalendar=${gatus_push_schedule}
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+EOF
+
+  systemctl daemon-reload
+  systemctl enable --now gatus-push.timer
+}
+
 # Disable firewall
 /usr/sbin/netfilter-persistent stop
 /usr/sbin/netfilter-persistent flush
@@ -75,7 +131,11 @@ echo "SystemMaxUse=100M" >> /etc/systemd/journald.conf
 echo "SystemMaxFileSize=100M" >> /etc/systemd/journald.conf
 systemctl restart systemd-journald
 
-instance_id=$(curl -s -H "Authorization: Bearer Oracle" -L http://169.254.169.254/opc/v2/instance | jq -r '.displayName')
+instance_display_name=$(curl -s -H "Authorization: Bearer Oracle" -L http://169.254.169.254/opc/v2/instance | jq -r '.displayName')
+
+if ! writeGatusPushScript || ! writeGatusPushEnv || ! writeGatusPushUnits; then
+  exit 1
+fi
 
 k3s_install_params=("--tls-san ${k3s_url}")
 k3s_install_params+=("--disable traefik")
@@ -93,7 +153,7 @@ k3s_install_params+=("--kube-proxy-arg healthz-bind-address=0.0.0.0:10256")
 
 INSTALL_PARAMS="$${k3s_install_params[*]}"
 
-if [[ "${first_instance_id}" == "$instance_id" ]]; then
+if [[ "${first_instance_display_name}" == "$instance_display_name" ]]; then
   until (curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION=${k3s_version} K3S_TOKEN=${k3s_token} sh -s - --cluster-init $INSTALL_PARAMS); do
     echo 'k3s did not install correctly'
     sleep 2
