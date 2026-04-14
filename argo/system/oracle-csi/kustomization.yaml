@@ -1,14 +1,10 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  # renovate: datasource=github-tags depName=oracle/oci-cloud-controller-manager
-  - https://raw.githubusercontent.com/oracle/oci-cloud-controller-manager/refs/tags/v1.34.0/manifests/container-storage-interface/oci-csi-controller-driver.yaml
-  # renovate: datasource=github-tags depName=oracle/oci-cloud-controller-manager
-  - https://raw.githubusercontent.com/oracle/oci-cloud-controller-manager/refs/tags/v1.34.0/manifests/container-storage-interface/oci-csi-node-driver.yaml
-  # renovate: datasource=github-tags depName=oracle/oci-cloud-controller-manager
-  - https://raw.githubusercontent.com/oracle/oci-cloud-controller-manager/refs/tags/v1.34.0/manifests/container-storage-interface/oci-csi-node-rbac.yaml
-  # renovate: datasource=github-tags depName=oracle/oci-cloud-controller-manager
-  - https://raw.githubusercontent.com/oracle/oci-cloud-controller-manager/refs/tags/v1.34.0/manifests/container-storage-interface/storage-class.yaml
+  - https://raw.githubusercontent.com/oracle/oci-cloud-controller-manager/refs/tags/v1.34.0/manifests/container-storage-interface/oci-csi-controller-driver.yaml # renovate: datasource=github-tags depName=oracle/oci-cloud-controller-manager
+  - https://raw.githubusercontent.com/oracle/oci-cloud-controller-manager/refs/tags/v1.34.0/manifests/container-storage-interface/oci-csi-node-driver.yaml # renovate: datasource=github-tags depName=oracle/oci-cloud-controller-manager
+  - https://raw.githubusercontent.com/oracle/oci-cloud-controller-manager/refs/tags/v1.34.0/manifests/container-storage-interface/oci-csi-node-rbac.yaml # renovate: datasource=github-tags depName=oracle/oci-cloud-controller-manager
+  - https://raw.githubusercontent.com/oracle/oci-cloud-controller-manager/refs/tags/v1.34.0/manifests/container-storage-interface/storage-class.yaml # renovate: datasource=github-tags depName=oracle/oci-cloud-controller-manager
 patches:
   - target:
       group: apps

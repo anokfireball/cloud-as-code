@@ -96,10 +96,9 @@ variable "image_id" {
   default = "ocid1.image.oc1.eu-frankfurt-1.aaaaaaaa6qjfirtoiqsvq4kybo66dmfr6t46vy6xbawdottjzp7eb6l4geoq"
 }
 # https://github.com/k3s-io/k3s
-# renovate: datasource=github-releases depName=k3s-io/k3s
 variable "k3s_version" {
   type    = string
-  default = "v1.35.3+k3s1"
+  default = "v1.35.3+k3s1" # renovate: datasource=github-releases depName=k3s-io/k3s
 }
 variable "gatus_push_targets" {
   type = map(object({
@@ -116,7 +115,7 @@ variable "gatus_push_targets" {
         "${var.cluster_name}-control-plane-1",
         "${var.cluster_name}-control-plane-2",
       ])
-    )) == 0 && length(setsubtract(
+      )) == 0 && length(setsubtract(
       toset([
         "${var.cluster_name}-control-plane-0",
         "${var.cluster_name}-control-plane-1",
@@ -147,16 +146,14 @@ variable "gatus_push_schedule" {
   }
 }
 # https://github.com/oracle/oci-cloud-controller-manager
-# renovate: datasource=github-tags depName=oracle/oci-cloud-controller-manager
 variable "oci_ccm_version" {
   type    = string
-  default = "v1.34.0"
+  default = "v1.34.0" # renovate: datasource=github-tags depName=oracle/oci-cloud-controller-manager
 }
 # https://github.com/kubernetes-csi/external-snapshotter/
-# renovate: datasource=github-releases depName=kubernetes-csi/external-snapshotter
 variable "external_snapshotter_version" {
   type    = string
-  default = "v8.2.0"
+  default = "v8.2.0" # renovate: datasource=github-releases depName=kubernetes-csi/external-snapshotter
 }
 
 variable "tailscale_auth_key" {
