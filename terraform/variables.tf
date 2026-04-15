@@ -153,7 +153,7 @@ variable "oci_ccm_version" {
 # https://github.com/kubernetes-csi/external-snapshotter/
 variable "external_snapshotter_version" {
   type    = string
-  default = "v8.2.0" # renovate: datasource=github-releases depName=kubernetes-csi/external-snapshotter
+  default = "v8.5.0" # renovate: datasource=github-releases depName=kubernetes-csi/external-snapshotter
 }
 
 variable "tailscale_auth_key" {
