@@ -7,6 +7,20 @@ metadata:
     argocd.argoproj.io/sync-wave: "6"
 spec:
   project: default
+  ignoreDifferences:
+    - group: ""
+      kind: ConfigMap
+      name: gatus-runtime
+      namespace: default
+      jsonPointers:
+        - /data/maintenance.yaml
+    - group: apps
+      kind: Deployment
+      name: gatus
+      namespace: default
+      jqPathExpressions:
+        - .spec.template.metadata.annotations."kubectl.kubernetes.io/restartedAt"
+        - .spec.template.metadata.annotations."reloader.stakater.com/last-reloaded-from"
   sources:
     - repoURL: https://github.com/anokfireball/cloud-as-code
       targetRevision: main
@@ -20,7 +34,7 @@ spec:
             repository: ghcr.io/twin/gatus
             tag: "v5.34.0" # renovate: datasource=docker depName=ghcr.io/twin/gatus
           annotations:
-            reloader.stakater.com/auto: "true"
+            secret.reloader.stakater.com/auto: "true"
           ingress:
             enabled: false
           gateway:
@@ -33,6 +47,7 @@ spec:
                 - gatus.kthxbye.cyou
               path: /
           env:
+            GATUS_CONFIG_PATH: /config
             SERVICE_DOMAIN:
               valueFrom:
                 secretKeyRef:
@@ -48,6 +63,11 @@ spec:
                 secretKeyRef:
                   name: gatus-postgres-user
                   key: password
+          extraVolumeMounts:
+            - name: gatus-runtime
+              mountPath: /config/runtime
+              readOnly: true
+              existingConfigMap: gatus-runtime
           externalConfigMap: gatus
   destination:
     name: in-cluster
@@ -57,4 +77,5 @@ spec:
       prune: true
       selfHeal: true
     syncOptions:
+      - RespectIgnoreDifferences=true
       - SkipDryRunOnMissingResource=true

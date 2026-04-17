@@ -14,6 +14,148 @@ spec:
     matchExpressions:
       - {key: node-role.kubernetes.io/control-plane, operator: Exists}
   serviceAccountName: system-upgrade-controller
+  prepare:
+    image: rancher/kubectl:v1.35.2
+    command: ["/bin/sh", "-c"]
+    args:
+      - |
+        set -eu
+
+        app_namespace="default"
+        app_name="gatus"
+        runtime_configmap="gatus-runtime"
+        selector="app.kubernetes.io/instance=gatus,app.kubernetes.io/name=gatus"
+        target_node="${SYSTEM_UPGRADE_NODE_NAME}"
+        handoff_taint="gatus.kthxbye.cyou/handoff=true:NoSchedule"
+        failsafe_job="gatus-maintenance-failsafe"
+
+        disable_maintenance() {
+          kubectl apply -f - <<'EOF'
+        apiVersion: v1
+        kind: ConfigMap
+        metadata:
+          name: gatus-runtime
+          namespace: default
+          annotations:
+            reloader.stakater.com/ignore: "true"
+        data:
+          maintenance.yaml: |
+            maintenance:
+              enabled: false
+        EOF
+        }
+
+        delete_failsafe_job() {
+          kubectl -n "${app_namespace}" delete job "${failsafe_job}" --ignore-not-found=true >/dev/null 2>&1 || true
+          attempts=0
+          while kubectl -n "${app_namespace}" get job "${failsafe_job}" >/dev/null 2>&1; do
+            attempts=$((attempts + 1))
+            if [ "${attempts}" -ge 30 ]; then
+              echo "timed out waiting for ${failsafe_job} deletion" >&2
+              return 1
+            fi
+            sleep 2
+          done
+        }
+
+        create_failsafe_job() {
+          delete_failsafe_job
+          kubectl apply -f - <<'EOF'
+        apiVersion: batch/v1
+        kind: Job
+        metadata:
+          name: gatus-maintenance-failsafe
+          namespace: default
+          annotations:
+            reloader.stakater.com/ignore: "true"
+        spec:
+          backoffLimit: 0
+          ttlSecondsAfterFinished: 300
+          template:
+            spec:
+              serviceAccountName: gatus-rollout-hooks
+              restartPolicy: Never
+              containers:
+                - name: kubectl
+                  image: rancher/kubectl:v1.35.2
+                  command: ["/bin/sh", "-c"]
+                  args:
+                    - |
+                      set -eu
+                      sleep 1800
+                      kubectl apply -f - <<'INNER_EOF'
+                      apiVersion: v1
+                      kind: ConfigMap
+                      metadata:
+                        name: gatus-runtime
+                        namespace: default
+                        annotations:
+                          reloader.stakater.com/ignore: "true"
+                      data:
+                        maintenance.yaml: |
+                          maintenance:
+                            enabled: false
+                      INNER_EOF
+        EOF
+        }
+
+        cleanup() {
+          disable_maintenance >/dev/null 2>&1 || true
+          delete_failsafe_job >/dev/null 2>&1 || true
+          kubectl taint node "${target_node}" "gatus.kthxbye.cyou/handoff:NoSchedule-" >/dev/null 2>&1 || true
+        }
+
+        if ! kubectl -n "${app_namespace}" get deployment "${app_name}" >/dev/null 2>&1; then
+          exit 0
+        fi
+
+        if ! kubectl -n "${app_namespace}" get pod -l "${selector}" -o jsonpath='{range .items[*]}{.spec.nodeName}{"\n"}{end}' | grep -qx "${target_node}"; then
+          exit 0
+        fi
+
+        trap cleanup EXIT
+
+        kubectl taint node "${target_node}" "${handoff_taint}" --overwrite
+        create_failsafe_job
+
+        start_time="$(date -u +%H:%M)"
+        weekday="$(date -u +%A)"
+
+        kubectl apply -f - <<EOF
+        apiVersion: v1
+        kind: ConfigMap
+        metadata:
+          name: ${runtime_configmap}
+          namespace: ${app_namespace}
+          annotations:
+            reloader.stakater.com/ignore: "true"
+        data:
+          maintenance.yaml: |
+            maintenance:
+              enabled: true
+              start: "${start_time}"
+              duration: 20m
+              timezone: UTC
+              every:
+                - "${weekday}"
+        EOF
+
+        sleep 70
+        kubectl -n "${app_namespace}" rollout restart deployment "${app_name}"
+        kubectl -n "${app_namespace}" rollout status deployment "${app_name}" --timeout=10m
+
+        current_nodes="$(kubectl -n "${app_namespace}" get pod -l "${selector}" -o jsonpath='{range .items[*]}{.spec.nodeName}{"\n"}{end}')"
+        if printf '%s\n' "${current_nodes}" | grep -qx "${target_node}"; then
+          echo "gatus remained on ${target_node} after handoff" >&2
+          exit 1
+        fi
+
+        disable_maintenance
+        sleep 70
+        delete_failsafe_job
+
+        trap - EXIT
+        kubectl taint node "${target_node}" "gatus.kthxbye.cyou/handoff:NoSchedule-" >/dev/null 2>&1 || true
   drain:
     force: true
     skipWaitForDeleteTimeout: 60

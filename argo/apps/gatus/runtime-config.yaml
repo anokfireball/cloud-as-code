@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gatus-runtime
+  namespace: default
+  annotations:
+    reloader.stakater.com/ignore: "true"
+data:
+  maintenance.yaml: |
+    maintenance:
+      enabled: false

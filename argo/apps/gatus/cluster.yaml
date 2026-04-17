@@ -9,6 +9,9 @@ spec:
   imageName: ghcr.io/cloudnative-pg/postgresql:17.2-32@sha256:b17d21f8ec36add9b3c0ea3fb354d05f62a8fddf8ba65ae94e63ba77bc42202e
   instances: 3
   enablePDB: true
+  primaryUpdateMethod: switchover
+  primaryUpdateStrategy: unsupervised
+  switchoverDelay: 120
   # Keep one instance per node; without spare nodes, a lost node leaves Gatus degraded.
   affinity:
     enablePodAntiAffinity: true

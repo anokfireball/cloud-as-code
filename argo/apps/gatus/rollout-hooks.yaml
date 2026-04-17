@@ -1,0 +1,227 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: gatus-rollout-hooks
+  namespace: default
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: gatus-rollout-hooks
+  namespace: default
+rules:
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["create", "get", "patch", "update"]
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["create", "delete", "get", "patch", "update"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: gatus-rollout-hooks
+  namespace: default
+subjects:
+  - kind: ServiceAccount
+    name: gatus-rollout-hooks
+    namespace: default
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: gatus-rollout-hooks
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: gatus-enable-maintenance
+  namespace: default
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/sync-wave: "-1"
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      serviceAccountName: gatus-rollout-hooks
+      restartPolicy: Never
+      containers:
+        - name: kubectl
+          image: rancher/kubectl:v1.35.2
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -eu
+
+              failsafe_job="gatus-maintenance-failsafe"
+
+              disable_maintenance() {
+                kubectl apply -f - <<'EOF'
+              apiVersion: v1
+              kind: ConfigMap
+              metadata:
+                name: gatus-runtime
+                namespace: default
+                annotations:
+                  reloader.stakater.com/ignore: "true"
+              data:
+                maintenance.yaml: |
+                  maintenance:
+                    enabled: false
+              EOF
+              }
+
+              delete_failsafe_job() {
+                kubectl -n default delete job "${failsafe_job}" --ignore-not-found=true >/dev/null 2>&1 || true
+                attempts=0
+                while kubectl -n default get job "${failsafe_job}" >/dev/null 2>&1; do
+                  attempts=$((attempts + 1))
+                  if [ "${attempts}" -ge 30 ]; then
+                    echo "timed out waiting for ${failsafe_job} deletion" >&2
+                    exit 1
+                  fi
+                  sleep 2
+                done
+              }
+
+              create_failsafe_job() {
+                delete_failsafe_job
+                kubectl apply -f - <<'EOF'
+              apiVersion: batch/v1
+              kind: Job
+              metadata:
+                name: gatus-maintenance-failsafe
+                namespace: default
+                annotations:
+                  reloader.stakater.com/ignore: "true"
+              spec:
+                backoffLimit: 0
+                ttlSecondsAfterFinished: 300
+                template:
+                  spec:
+                    serviceAccountName: gatus-rollout-hooks
+                    restartPolicy: Never
+                    containers:
+                      - name: kubectl
+                        image: rancher/kubectl:v1.35.2
+                        command: ["/bin/sh", "-c"]
+                        args:
+                          - |
+                            set -eu
+                            sleep 1800
+                            kubectl apply -f - <<'INNER_EOF'
+                            apiVersion: v1
+                            kind: ConfigMap
+                            metadata:
+                              name: gatus-runtime
+                              namespace: default
+                              annotations:
+                                reloader.stakater.com/ignore: "true"
+                            data:
+                              maintenance.yaml: |
+                                maintenance:
+                                  enabled: false
+                            INNER_EOF
+              EOF
+              }
+
+              start_time="$(date -u +%H:%M)"
+              weekday="$(date -u +%A)"
+              create_failsafe_job
+              kubectl apply -f - <<EOF
+              apiVersion: v1
+              kind: ConfigMap
+              metadata:
+                name: gatus-runtime
+                namespace: default
+                annotations:
+                  reloader.stakater.com/ignore: "true"
+              data:
+                maintenance.yaml: |
+                  maintenance:
+                    enabled: true
+                    start: "${start_time}"
+                    duration: 20m
+                    timezone: UTC
+                    every:
+                      - "${weekday}"
+              EOF
+              sleep 70
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: gatus-disable-maintenance
+  namespace: default
+  annotations:
+    argocd.argoproj.io/hook: PostSync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      serviceAccountName: gatus-rollout-hooks
+      restartPolicy: Never
+      containers:
+        - name: kubectl
+          image: rancher/kubectl:v1.35.2
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -eu
+              kubectl apply -f - <<'EOF'
+              apiVersion: v1
+              kind: ConfigMap
+              metadata:
+                name: gatus-runtime
+                namespace: default
+                annotations:
+                  reloader.stakater.com/ignore: "true"
+              data:
+                maintenance.yaml: |
+                  maintenance:
+                    enabled: false
+              EOF
+              kubectl -n default delete job gatus-maintenance-failsafe --ignore-not-found=true >/dev/null 2>&1 || true
+              sleep 70
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: gatus-disable-maintenance-syncfail
+  namespace: default
+  annotations:
+    argocd.argoproj.io/hook: SyncFail
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      serviceAccountName: gatus-rollout-hooks
+      restartPolicy: Never
+      containers:
+        - name: kubectl
+          image: rancher/kubectl:v1.35.2
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -eu
+              kubectl apply -f - <<'EOF'
+              apiVersion: v1
+              kind: ConfigMap
+              metadata:
+                name: gatus-runtime
+                namespace: default
+                annotations:
+                  reloader.stakater.com/ignore: "true"
+              data:
+                maintenance.yaml: |
+                  maintenance:
+                    enabled: false
+              EOF
+              kubectl -n default delete job gatus-maintenance-failsafe --ignore-not-found=true >/dev/null 2>&1 || true
+              sleep 70
