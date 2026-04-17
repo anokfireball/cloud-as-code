@@ -3,12 +3,20 @@ kind: ServiceAccount
 metadata:
   name: gatus-rollout-hooks
   namespace: default
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/sync-wave: "-2"
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: gatus-rollout-hooks
   namespace: default
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/sync-wave: "-2"
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
 rules:
   - apiGroups: [""]
     resources: ["configmaps"]
@@ -22,6 +30,10 @@ kind: RoleBinding
 metadata:
   name: gatus-rollout-hooks
   namespace: default
+  annotations:
+    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/sync-wave: "-2"
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
 subjects:
   - kind: ServiceAccount
     name: gatus-rollout-hooks
