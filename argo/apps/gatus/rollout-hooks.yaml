@@ -55,7 +55,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: kubectl
-          image: bitnami/kubectl:latest
+          image: anokfireball/baseimage
           command: ["/bin/sh", "-c"]
           args:
             - |
@@ -111,7 +111,7 @@ spec:
                     restartPolicy: Never
                     containers:
                       - name: kubectl
-                        image: bitnami/kubectl:latest
+                        image: anokfireball/baseimage
                         command: ["/bin/sh", "-c"]
                         args:
                           - |
@@ -173,7 +173,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: kubectl
-          image: bitnami/kubectl:latest
+          image: anokfireball/baseimage
           command: ["/bin/sh", "-c"]
           args:
             - |
@@ -211,7 +211,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: kubectl
-          image: bitnami/kubectl:latest
+          image: anokfireball/baseimage
           command: ["/bin/sh", "-c"]
           args:
             - |
