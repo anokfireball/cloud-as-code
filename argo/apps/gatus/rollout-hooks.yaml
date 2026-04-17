@@ -4,9 +4,7 @@ metadata:
   name: gatus-rollout-hooks
   namespace: default
   annotations:
-    argocd.argoproj.io/hook: PreSync
     argocd.argoproj.io/sync-wave: "-2"
-    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
@@ -14,9 +12,7 @@ metadata:
   name: gatus-rollout-hooks
   namespace: default
   annotations:
-    argocd.argoproj.io/hook: PreSync
     argocd.argoproj.io/sync-wave: "-2"
-    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
 rules:
   - apiGroups: [""]
     resources: ["configmaps"]
@@ -31,9 +27,7 @@ metadata:
   name: gatus-rollout-hooks
   namespace: default
   annotations:
-    argocd.argoproj.io/hook: PreSync
     argocd.argoproj.io/sync-wave: "-2"
-    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
 subjects:
   - kind: ServiceAccount
     name: gatus-rollout-hooks
@@ -49,7 +43,7 @@ metadata:
   name: gatus-enable-maintenance
   namespace: default
   annotations:
-    argocd.argoproj.io/hook: PreSync
+    argocd.argoproj.io/hook: Sync
     argocd.argoproj.io/sync-wave: "-1"
     argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded
 spec:
