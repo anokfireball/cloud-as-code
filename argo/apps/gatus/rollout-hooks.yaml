@@ -61,7 +61,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: kubectl
-          image: rancher/kubectl:v1.35.2
+          image: bitnami/kubectl:latest
           command: ["/bin/sh", "-c"]
           args:
             - |
@@ -117,7 +117,7 @@ spec:
                     restartPolicy: Never
                     containers:
                       - name: kubectl
-                        image: rancher/kubectl:v1.35.2
+                        image: bitnami/kubectl:latest
                         command: ["/bin/sh", "-c"]
                         args:
                           - |
@@ -179,7 +179,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: kubectl
-          image: rancher/kubectl:v1.35.2
+          image: bitnami/kubectl:latest
           command: ["/bin/sh", "-c"]
           args:
             - |
@@ -217,7 +217,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: kubectl
-          image: rancher/kubectl:v1.35.2
+          image: bitnami/kubectl:latest
           command: ["/bin/sh", "-c"]
           args:
             - |
