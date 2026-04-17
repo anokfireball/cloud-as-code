@@ -46,6 +46,16 @@
     {
       "customType": "regex",
       "managerFilePatterns": [
+        "/^argo\\/(apps\\/gatus\\/rollout-hooks|system\\/system-upgrade-controller\\/plan)\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "image:\\s*\"?ghcr\\.io/anokfireball/base-image:(?<currentValue>[^@\"\\s]+)@(?<currentDigest>sha256:[a-f0-9]+)\"?\\s*#\\s*renovate:\\s*datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)(?:\\s+versioning=(?<versioning>\\S+))?"
+      ],
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
+    },
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
         "terraform/variables.tf"
       ],
       "matchStrings": [

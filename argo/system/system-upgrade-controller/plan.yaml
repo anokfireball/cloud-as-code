@@ -15,7 +15,7 @@ spec:
       - {key: node-role.kubernetes.io/control-plane, operator: Exists}
   serviceAccountName: system-upgrade-controller
   prepare:
-    image: anokfireball/baseimage
+    image: ghcr.io/anokfireball/base-image:3.23.3@sha256:a52c7b93a177ae738bd503c30ecab0ae729e1a0f8bce611489e2bbdbb17d0531 # renovate: datasource=docker depName=ghcr.io/anokfireball/base-image versioning=semver
     command: ["/bin/sh", "-c"]
     args:
       - |
@@ -77,7 +77,7 @@ spec:
               restartPolicy: Never
               containers:
                 - name: kubectl
-                  image: anokfireball/baseimage
+                  image: ghcr.io/anokfireball/base-image:3.23.3@sha256:a52c7b93a177ae738bd503c30ecab0ae729e1a0f8bce611489e2bbdbb17d0531 # renovate: datasource=docker depName=ghcr.io/anokfireball/base-image versioning=semver
                   command: ["/bin/sh", "-c"]
                   args:
                     - |
