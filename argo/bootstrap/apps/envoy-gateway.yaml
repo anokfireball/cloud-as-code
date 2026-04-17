@@ -12,7 +12,26 @@ spec:
       targetRevision: 1.7.1
       chart: gateway-helm
       helm:
-        valuesObject: {}
+        valuesObject:
+          podDisruptionBudget:
+            minAvailable: 1
+          deployment:
+            replicas: 2
+            pod:
+              affinity:
+                podAntiAffinity:
+                  requiredDuringSchedulingIgnoredDuringExecution:
+                    - labelSelector:
+                        matchLabels:
+                          control-plane: envoy-gateway
+                      topologyKey: kubernetes.io/hostname
+              topologySpreadConstraints:
+                - maxSkew: 1
+                  topologyKey: kubernetes.io/hostname
+                  whenUnsatisfiable: DoNotSchedule
+                  labelSelector:
+                    matchLabels:
+                      control-plane: envoy-gateway
         skipCrds: true
     - repoURL: https://github.com/anokfireball/cloud-as-code
       targetRevision: main
