@@ -124,8 +124,26 @@ systemctl stop netfilter-persistent.service
 systemctl disable netfilter-persistent.service
 
 apt-get update
-apt-get install -y software-properties-common jq
+apt-get install -y software-properties-common jq unattended-upgrades
 DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
+
+cat > /etc/apt/apt.conf.d/20auto-upgrades <<'APTEOF'
+APT::Periodic::Update-Package-Lists "1";
+APT::Periodic::Unattended-Upgrade "1";
+APT::Periodic::AutocleanInterval "7";
+APTEOF
+
+cat > /etc/apt/apt.conf.d/50unattended-upgrades <<'APTEOF'
+Unattended-Upgrade::Allowed-Origins {
+    "${distro_id}:${distro_codename}-security";
+    "${distro_id}ESMApps:${distro_codename}-apps-security";
+};
+Unattended-Upgrade::Automatic-Reboot "false";
+Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
+Unattended-Upgrade::Remove-Unused-Dependencies "true";
+APTEOF
+
+systemctl enable --now unattended-upgrades
 
 # Fix /var/log/journal dir size
 echo "SystemMaxUse=100M" >> /etc/systemd/journald.conf

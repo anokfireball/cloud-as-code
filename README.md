@@ -57,7 +57,13 @@ At the highest possible level, this repo and CaC workflow consists of two parts:
     <tr>
         <td><img width="32" src="https://raw.githubusercontent.com/rancher/ui/refs/heads/master/public/assets/images/logos/main.svg"></td>
         <td><a href="https://github.com/rancher/system-upgrade-controller">system-upgrade-controller</a></td>
-        <td>System Upgrade Controller</td>
+        <td>k8s Upgrade Controller</td>
+        <td></td>
+    </tr>
+    <tr>
+        <td><img width="32" src="https://raw.githubusercontent.com/kubereboot/website/refs/heads/main/static/logos/icon/color/kured-icon-color.svg"></td>
+        <td><a href="https://github.com/kubereboot/kured">kured</a></td>
+        <td>Node Reboot Daemon </td>
         <td></td>
     </tr>
     <tr>

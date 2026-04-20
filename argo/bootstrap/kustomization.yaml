@@ -17,3 +17,4 @@ resources:
   - apps/envoy-gateway.yaml
   - apps/external-dns.yaml
   - apps/gatus.yaml
+  - apps/kured.yaml

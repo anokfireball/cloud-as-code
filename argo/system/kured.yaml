@@ -1,0 +1,34 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kured
+  namespace: argocd-system
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+spec:
+  project: default
+  sources:
+    - repoURL: https://kubereboot.github.io/charts
+      chart: kured
+      targetRevision: 5.11.0 # renovate: datasource=helm depName=kured registryUrl=https://kubereboot.github.io/charts
+      helm:
+        valuesObject:
+          configuration:
+            concurrency: 1
+            period: 5m0s
+            annotateNodes: true
+            preferNoScheduleTaint: "kured.dev/reboot-pending"
+            lockTtl: 30m
+            lockReleaseDelay: 1m
+            blockingPodSelector:
+              - "app.kubernetes.io/instance=gatus,app.kubernetes.io/name=gatus"
+    - repoURL: https://github.com/anokfireball/cloud-as-code
+      targetRevision: main
+      path: argo/system/kured
+  destination:
+    name: in-cluster
+    namespace: kube-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
