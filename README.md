@@ -1,8 +1,9 @@
+<div align="center">
+
 ![Cloud-as-Code logo](logo.png "Cloud-as-Code logo")
 
-<img src="" alt="Node Uptime">
-<img src="" alt="Cluster Uptime">
-<img src="" alt="Service Uptime">
+<img src="https://gatus.kthxbye.cyou/api/v1/endpoints/k8s-homelab_loadbalancer-[http]/health/badge.svg" alt="Cluster Health">
+<a href="https://gatus.kthxbye.cyou/endpoints/k8s-oci_loadbalancer-[http]"><img src="https://gatus.kthxbye.cyou/api/v1/endpoints/k8s-oci_loadbalancer-[http]/uptimes/30d/badge.svg" alt="Cluster Uptime"></a>
 
 <h3>Bootstrap and GitOps sources to get my cloud infrastructure set up consistently.</h3>
 
