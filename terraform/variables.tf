@@ -98,7 +98,7 @@ variable "image_id" {
 # https://github.com/k3s-io/k3s
 variable "k3s_version" {
   type    = string
-  default = "v1.35.3+k3s1" # renovate: datasource=github-releases depName=k3s-io/k3s
+  default = "v1.35.4+k3s1" # renovate: datasource=github-releases depName=k3s-io/k3s
 }
 variable "gatus_push_targets" {
   type = map(object({
