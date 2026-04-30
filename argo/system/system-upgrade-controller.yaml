@@ -10,7 +10,7 @@ spec:
   sources:
     - repoURL: http://charts.rancher.io
       chart: system-upgrade-controller
-      targetRevision: 109.0.0
+      targetRevision: 109.0.1
     - repoURL: https://github.com/anokfireball/cloud-as-code
       targetRevision: main
       path: argo/system/system-upgrade-controller
