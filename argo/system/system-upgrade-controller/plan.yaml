@@ -10,6 +10,10 @@ metadata:
 spec:
   concurrency: 1
   version: "v1.35.4+k3s1" # renovate: datasource=github-releases depName=k3s-io/k3s
+  tolerations:
+    - key: "gatus.kthxbye.cyou/handoff"
+      operator: "Exists"
+      effect: "NoSchedule"
   nodeSelector:
     matchExpressions:
       - {key: node-role.kubernetes.io/control-plane, operator: Exists}
@@ -104,6 +108,9 @@ spec:
           delete_failsafe_job >/dev/null 2>&1 || true
           kubectl taint node "${target_node}" "gatus.kthxbye.cyou/handoff:NoSchedule-" >/dev/null 2>&1 || true
         }
+
+        # Clean up any leftover handoff taint from a previous interrupted run
+        kubectl taint node "${target_node}" "gatus.kthxbye.cyou/handoff:NoSchedule-" >/dev/null 2>&1 || true
 
         if ! kubectl -n "${app_namespace}" get deployment "${app_name}" >/dev/null 2>&1; then
           exit 0
