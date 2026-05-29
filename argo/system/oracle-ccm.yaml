@@ -49,7 +49,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/kubernetes-csi/external-snapshotter.git
-    targetRevision: v8.5.0
+    targetRevision: v8.6.0
     path: client/config/crd
   destination:
     name: in-cluster
