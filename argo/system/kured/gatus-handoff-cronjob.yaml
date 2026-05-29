@@ -18,7 +18,7 @@ spec:
           restartPolicy: Never
           containers:
             - name: handoff
-              image: ghcr.io/anokfireball/base-image:3.23.4@sha256:46ea6acd4799158e5cb4d38968541d08c08c5a7fc05b4eac951033506ddd893d # renovate: datasource=docker depName=ghcr.io/anokfireball/base-image versioning=semver
+              image: ghcr.io/anokfireball/base-image:3.23.4@sha256:c44cd372943b9d2dac01b3045b68e7d353c2741ecc7581c7da233a6adf2eab58 # renovate: datasource=docker depName=ghcr.io/anokfireball/base-image versioning=semver
               command: ["/bin/sh", "-c"]
               args:
                 - |
@@ -102,7 +102,7 @@ spec:
                         restartPolicy: Never
                         containers:
                           - name: kubectl
-                            image: ghcr.io/anokfireball/base-image:3.23.4@sha256:46ea6acd4799158e5cb4d38968541d08c08c5a7fc05b4eac951033506ddd893d # renovate: datasource=docker depName=ghcr.io/anokfireball/base-image versioning=semver
+                            image: ghcr.io/anokfireball/base-image:3.23.4@sha256:c44cd372943b9d2dac01b3045b68e7d353c2741ecc7581c7da233a6adf2eab58 # renovate: datasource=docker depName=ghcr.io/anokfireball/base-image versioning=semver
                             command: ["/bin/sh", "-c"]
                             args:
                               - |
