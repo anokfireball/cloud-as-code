@@ -9,7 +9,7 @@ spec:
   project: default
   source:
     repoURL: docker.io/envoyproxy
-    targetRevision: 1.8.0
+    targetRevision: 1.8.1
     chart: gateway-crds-helm
     helm:
       valuesObject:
