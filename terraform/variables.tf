@@ -76,7 +76,7 @@ variable "architecture" {
 }
 variable "node_count" {
   type    = number
-  default = 3
+  default = 2
 }
 variable "node_ocpus" {
   type    = number
@@ -84,11 +84,11 @@ variable "node_ocpus" {
 }
 variable "node_memory_in_gbs" {
   type    = string
-  default = "8"
+  default = "6"
 }
 variable "boot_volume_size_in_gbs" {
   type    = string
-  default = "66"
+  default = "100"
 }
 # oci compute image list --operating-system "Canonical Ubuntu" --operating-system-version "24.04" --shape "VM.Standard.A1.Flex" --query 'data[0].id'
 variable "image_id" {
@@ -108,22 +108,10 @@ variable "gatus_push_targets" {
   sensitive = true
 
   validation {
-    condition = length(setsubtract(
-      toset(keys(var.gatus_push_targets)),
-      toset([
-        "${var.cluster_name}-control-plane-0",
-        "${var.cluster_name}-control-plane-1",
-        "${var.cluster_name}-control-plane-2",
-      ])
-      )) == 0 && length(setsubtract(
-      toset([
-        "${var.cluster_name}-control-plane-0",
-        "${var.cluster_name}-control-plane-1",
-        "${var.cluster_name}-control-plane-2",
-      ]),
-      toset(keys(var.gatus_push_targets))
-    )) == 0
-    error_message = "gatus_push_targets must contain exactly these keys: ${var.cluster_name}-control-plane-0, ${var.cluster_name}-control-plane-1, and ${var.cluster_name}-control-plane-2."
+    condition = toset(keys(var.gatus_push_targets)) == toset([
+      for i in range(var.node_count) : "${var.cluster_name}-control-plane-${i}"
+    ])
+    error_message = "gatus_push_targets must contain exactly one entry per node: ${join(", ", [for i in range(var.node_count) : "${var.cluster_name}-control-plane-${i}"])}."
   }
 
   validation {
