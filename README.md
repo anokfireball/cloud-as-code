@@ -38,6 +38,14 @@ At the highest possible level, this repo and CaC workflow consists of two parts:
 | [SOPS](https://getsops.io/)                      | Secrets Management                     | via [ksops](https://github.com/viaduct-ai/kustomize-sops), using [age](https://age-encryption.org/) rather than pgp |
 | [tailscale](https://tailscale.com/)              | Overlay Mesh VPN                       |                                                                                                                     |
 
+## 2-Node Cluster Limitations
+
+This cluster runs **2 k3s server nodes** with embedded etcd to fit within Oracle's Always Free tier (2 OCPUs / 12 GB RAM total). This has important implications:
+
+- **No fault tolerance:** Embedded etcd requires a majority quorum (2 of 2 = both nodes). Losing either node loses quorum and the cluster becomes read-only / unavailable.
+- **Recovery:** If a node is permanently lost, the remaining node must be re-bootstrapped as a new single-node cluster, or both nodes destroyed and recreated via `terraform destroy` + `terraform apply`.
+- **Accepted trade-off:** Full recreate is fast (~5 min) and no persistent data requires migration. This is acceptable for a monitoring/status page workload.
+
 ## 📱 Applications
 
 ### 🤖 System-Level
