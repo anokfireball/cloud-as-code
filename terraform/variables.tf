@@ -148,7 +148,7 @@ variable "gatus_push_schedule" {
 # https://github.com/oracle/oci-cloud-controller-manager
 variable "oci_ccm_version" {
   type    = string
-  default = "v1.34.2" # renovate: datasource=github-tags depName=oracle/oci-cloud-controller-manager
+  default = "v1.35.0" # renovate: datasource=github-tags depName=oracle/oci-cloud-controller-manager
 }
 # https://github.com/kubernetes-csi/external-snapshotter/
 variable "external_snapshotter_version" {
