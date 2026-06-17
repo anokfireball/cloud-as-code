@@ -135,8 +135,8 @@ APTEOF
 
 cat > /etc/apt/apt.conf.d/50unattended-upgrades <<'APTEOF'
 Unattended-Upgrade::Allowed-Origins {
-    "${distro_id}:${distro_codename}-security";
-    "${distro_id}ESMApps:${distro_codename}-apps-security";
+    "$${distro_id}:$${distro_codename}-security";
+    "$${distro_id}ESMApps:$${distro_codename}-apps-security";
 };
 Unattended-Upgrade::Automatic-Reboot "false";
 Unattended-Upgrade::Remove-Unused-Kernel-Packages "true";
