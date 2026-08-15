@@ -13,6 +13,8 @@ spec:
       chart: gateway-helm
       helm:
         valuesObject:
+          crds:
+            enabled: false
           podDisruptionBudget:
             minAvailable: 1
           deployment:
@@ -32,7 +34,6 @@ spec:
                   labelSelector:
                     matchLabels:
                       control-plane: envoy-gateway
-        skipCrds: true
     - repoURL: https://github.com/anokfireball/cloud-as-code
       targetRevision: main
       path: argo/system/envoy-gateway
