@@ -19,11 +19,12 @@ spec:
             minAvailable: 1
           deployment:
             replicas: 2
-            strategy:
-              type: RollingUpdate
-              rollingUpdate:
-                maxSurge: 0
-                maxUnavailable: 1
+            envoyGateway:
+              strategy:
+                type: RollingUpdate
+                rollingUpdate:
+                  maxSurge: 0
+                  maxUnavailable: 1
             pod:
               affinity:
                 podAntiAffinity:
