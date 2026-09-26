@@ -162,6 +162,8 @@ k3s_install_params+=("--disable traefik")
 instance_ocid=$(curl -H "Authorization: Bearer Oracle" -L http://169.254.169.254/opc/v2/instance/id)
 k3s_install_params+=("--disable-cloud-controller")
 k3s_install_params+=("--disable servicelb")
+# Gateway API CRDs are owned by the envoy-gateway-crds Argo app (experimental channel).
+k3s_install_params+=("--disable gateway-api-crd")
 k3s_install_params+=("--kubelet-arg cloud-provider=external")
 k3s_install_params+=("--kubelet-arg provider-id=oci://$instance_ocid")
 # Keep unused image layers from crowding the root filesystem that local-path uses.
