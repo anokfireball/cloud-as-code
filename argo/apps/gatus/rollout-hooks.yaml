@@ -55,7 +55,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: kubectl
-          image: ghcr.io/anokfireball/base-image:3.24.2@sha256:60f2fb491159c1d90c124aafcb53db82db0446d68ca11860d2bb0c1c9bdc21d3 # renovate: datasource=docker depName=ghcr.io/anokfireball/base-image versioning=semver
+          image: ghcr.io/anokfireball/base-image:3.24.2@sha256:4354dd7e7a07d0f9237a595e300f474d2ddbefd2d9d640695c1d9689ff157ad7 # renovate: datasource=docker depName=ghcr.io/anokfireball/base-image versioning=semver
           command: ["/bin/sh", "-c"]
           args:
             - |
@@ -111,7 +111,7 @@ spec:
                     restartPolicy: Never
                     containers:
                       - name: kubectl
-                        image: ghcr.io/anokfireball/base-image:3.24.2@sha256:60f2fb491159c1d90c124aafcb53db82db0446d68ca11860d2bb0c1c9bdc21d3 # renovate: datasource=docker depName=ghcr.io/anokfireball/base-image versioning=semver
+                        image: ghcr.io/anokfireball/base-image:3.24.2@sha256:4354dd7e7a07d0f9237a595e300f474d2ddbefd2d9d640695c1d9689ff157ad7 # renovate: datasource=docker depName=ghcr.io/anokfireball/base-image versioning=semver
                         command: ["/bin/sh", "-c"]
                         args:
                           - |
@@ -173,7 +173,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: kubectl
-          image: ghcr.io/anokfireball/base-image:3.24.2@sha256:60f2fb491159c1d90c124aafcb53db82db0446d68ca11860d2bb0c1c9bdc21d3 # renovate: datasource=docker depName=ghcr.io/anokfireball/base-image versioning=semver
+          image: ghcr.io/anokfireball/base-image:3.24.2@sha256:4354dd7e7a07d0f9237a595e300f474d2ddbefd2d9d640695c1d9689ff157ad7 # renovate: datasource=docker depName=ghcr.io/anokfireball/base-image versioning=semver
           command: ["/bin/sh", "-c"]
           args:
             - |
@@ -211,7 +211,7 @@ spec:
       restartPolicy: Never
       containers:
         - name: kubectl
-          image: ghcr.io/anokfireball/base-image:3.24.2@sha256:60f2fb491159c1d90c124aafcb53db82db0446d68ca11860d2bb0c1c9bdc21d3 # renovate: datasource=docker depName=ghcr.io/anokfireball/base-image versioning=semver
+          image: ghcr.io/anokfireball/base-image:3.24.2@sha256:4354dd7e7a07d0f9237a595e300f474d2ddbefd2d9d640695c1d9689ff157ad7 # renovate: datasource=docker depName=ghcr.io/anokfireball/base-image versioning=semver
           command: ["/bin/sh", "-c"]
           args:
             - |
