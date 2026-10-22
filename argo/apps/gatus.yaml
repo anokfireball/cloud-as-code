@@ -32,7 +32,7 @@ spec:
         valuesObject:
           image:
             repository: ghcr.io/twin/gatus
-            tag: "v5.37.0" # renovate: datasource=docker depName=ghcr.io/twin/gatus
+            tag: "v5.37.0@sha256:094eb186e55235db367e90e9d56140e5897b7044c41de23cde4cc18e6da1242e" # renovate: datasource=docker depName=ghcr.io/twin/gatus
           annotations:
             secret.reloader.stakater.com/auto: "true"
           ingress:
