@@ -19,6 +19,7 @@
       "matchStrings": [
         "tag:\\s*\"?(?<currentValue>[^\"\\s@]+)(?:@(?<currentDigest>sha256:[a-f0-9]+))?\"?\\s*#\\s*renovate:\\s*datasource=(?<datasource>\\S+)\\s+depName=(?<depName>\\S+)"
       ],
+      "autoReplaceStringTemplate": "tag: \"{{{newValue}}}{{#if newDigest}}@{{{newDigest}}}{{/if}}\" # renovate: datasource={{{datasource}}} depName={{{depName}}}",
       "versioningTemplate": "semver"
     },
     {
