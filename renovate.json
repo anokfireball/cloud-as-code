@@ -5,6 +5,16 @@
   ],
   "prHourlyLimit": 0,
   "prConcurrentLimit": 0,
+  "packageRules": [
+    {
+      "description": "Bundle Envoy Gateway chart and CRDs so they update together",
+      "matchPackageNames": [
+        "docker.io/envoyproxy/gateway-helm",
+        "docker.io/envoyproxy/gateway-crds-helm"
+      ],
+      "groupName": "envoy-gateway"
+    }
+  ],
   "argocd": {
     "managerFilePatterns": [
       "/argo/.+\\.ya?ml$/"
