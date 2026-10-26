@@ -21,6 +21,13 @@
         "https://github.com/kubernetes-csi/external-snapshotter.git"
       ],
       "groupName": "external-snapshotter"
+    },
+    {
+      "description": "Bundle base-image tag and digest updates into one PR",
+      "matchPackageNames": [
+        "ghcr.io/anokfireball/base-image"
+      ],
+      "groupName": "base-image"
     }
   ],
   "argocd": {
