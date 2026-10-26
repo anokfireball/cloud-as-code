@@ -13,6 +13,14 @@
         "docker.io/envoyproxy/gateway-crds-helm"
       ],
       "groupName": "envoy-gateway"
+    },
+    {
+      "description": "Bundle external-snapshotter kustomize ref and tag so they update together",
+      "matchPackageNames": [
+        "kubernetes-csi/external-snapshotter",
+        "https://github.com/kubernetes-csi/external-snapshotter.git"
+      ],
+      "groupName": "external-snapshotter"
     }
   ],
   "argocd": {
