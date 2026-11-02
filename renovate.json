@@ -81,6 +81,21 @@
     },
     {
       "customType": "regex",
+      "description": "CNPG PostgreSQL images (Cluster imageName, ImageCatalog image). Major, flavor and Debian release come from the file, so only same-flavor minor and digest updates are proposed.",
+      "managerFilePatterns": [
+        "/^argo\\/.+\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "imageName:\\s*\"?ghcr\\.io/cloudnative-pg/postgresql:(?<currentValue>(?<pgMajor>\\d+)\\.\\d+-(?<flavor>[a-z]+)-(?<distro>[a-z]+))@(?<currentDigest>sha256:[a-f0-9]+)\"?",
+        "image:\\s*\"?ghcr\\.io/cloudnative-pg/postgresql:(?<currentValue>(?<pgMajor>\\d+)\\.\\d+-(?<flavor>[a-z]+)-(?<distro>[a-z]+))@(?<currentDigest>sha256:[a-f0-9]+)\"?"
+      ],
+      "datasourceTemplate": "docker",
+      "packageNameTemplate": "ghcr.io/cloudnative-pg/postgresql",
+      "versioningTemplate": "regex:^(?<major>{{{pgMajor}}})\\.(?<minor>\\d+)-{{{flavor}}}-{{{distro}}}$",
+      "extractVersionTemplate": "^(?<version>{{{pgMajor}}}\\.\\d+-{{{flavor}}}-{{{distro}}})$"
+    },
+    {
+      "customType": "regex",
       "managerFilePatterns": [
         "terraform/variables.tf"
       ],
