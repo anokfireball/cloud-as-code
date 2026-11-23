@@ -28,6 +28,18 @@
         "ghcr.io/anokfireball/base-image"
       ],
       "groupName": "base-image"
+    },
+    {
+      "description": "Release notes for reloader chart releases tagged chart-v<version>. The prefix is optional, so index versions pass through extractVersion unchanged.",
+      "matchDatasources": ["helm"],
+      "matchPackageNames": ["reloader"],
+      "extractVersion": "^(?:chart-v)?(?<version>.+)$"
+    },
+    {
+      "description": "Release notes for external-dns chart releases tagged external-dns-helm-chart-<version>. The prefix is optional, so index versions pass through extractVersion unchanged.",
+      "matchDatasources": ["helm"],
+      "matchPackageNames": ["external-dns"],
+      "extractVersion": "^(?:external-dns-helm-chart-)?(?<version>.+)$"
     }
   ],
   "argocd": {
